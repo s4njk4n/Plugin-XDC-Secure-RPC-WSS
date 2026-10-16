@@ -110,18 +110,25 @@ chown -R "$USERNAME:$USERNAME" "$TARGET_DIR"
 success "Repository moved to $TARGET_DIR and ownership set to $USERNAME."
 
 echo
-info "Next steps once you are logged in as $USERNAME:"
-echo "  sudo ./install_xdc_rpc_wss.sh"
+header "Next steps"
+
+# Try to detect a public IP for the SSH command (best effort)
+PUBLIC_IP=$(curl -4 -s --max-time 5 ifconfig.me 2>/dev/null || \
+            curl -4 -s --max-time 5 icanhazip.com 2>/dev/null || \
+            curl -4 -s --max-time 5 ipinfo.io/ip 2>/dev/null || \
+            echo "<your-server-ip>")
+
+echo -e "${BOLD}1. SSH in as the new user (copy & paste):${NC}"
+echo -e "   ${GREEN}ssh ${USERNAME}@${PUBLIC_IP}${NC}"
 echo
 
-if yesno "Switch to the new user now (opens a shell in the repo directory)?" "y"; then
-  info "Switching to user '$USERNAME' and entering the repository..."
-  info "Type 'exit' later if you want to return to root."
-  # Start a login shell for the new user already inside the repo
-  exec su - "$USERNAME" -c "cd '$TARGET_DIR' && exec bash -l"
-else
-  success "Done."
-  echo "You can switch later with:"
-  echo "  su - $USERNAME"
-  echo "  cd ~/$REPO_NAME"
-fi
+echo -e "${BOLD}2. Once logged in, run this single command to enter the repo and start the installer:${NC}"
+echo -e "   ${GREEN}cd ~/${REPO_NAME} && sudo ./install_xdc_rpc_wss.sh${NC}"
+echo
+
+echo -e "${CYAN}The repository has already been moved to:${NC} /home/${USERNAME}/${REPO_NAME}"
+echo
+
+info "Logging out of this root session..."
+sleep 2
+exit
