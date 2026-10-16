@@ -112,23 +112,23 @@ success "Repository moved to $TARGET_DIR and ownership set to $USERNAME."
 echo
 header "Next steps"
 
+info "First, log out of this root session:"
+echo -e "   ${GREEN}exit${NC}"
+echo
+
 # Try to detect a public IP for the SSH command (best effort)
 PUBLIC_IP=$(curl -4 -s --max-time 5 ifconfig.me 2>/dev/null || \
             curl -4 -s --max-time 5 icanhazip.com 2>/dev/null || \
             curl -4 -s --max-time 5 ipinfo.io/ip 2>/dev/null || \
             echo "<your-server-ip>")
 
-echo -e "${BOLD}1. SSH in as the new user (copy & paste):${NC}"
+echo -e "${BOLD}Then SSH in as the new user (copy & paste):${NC}"
 echo -e "   ${GREEN}ssh ${USERNAME}@${PUBLIC_IP}${NC}"
 echo
 
-echo -e "${BOLD}2. Once logged in, run this single command to enter the repo and start the installer:${NC}"
+echo -e "${BOLD}Once logged in, run this single command to enter the repo and start the installer:${NC}"
 echo -e "   ${GREEN}cd ~/${REPO_NAME} && sudo ./install_xdc_rpc_wss.sh${NC}"
 echo
 
 echo -e "${CYAN}The repository has already been moved to:${NC} /home/${USERNAME}/${REPO_NAME}"
 echo
-
-info "Logging out of this root session..."
-sleep 2
-exit
