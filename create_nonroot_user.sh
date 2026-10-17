@@ -127,7 +127,7 @@ echo -e "   ${GREEN}ssh ${USERNAME}@${PUBLIC_IP}${NC}"
 echo
 
 echo -e "${BOLD}Once logged in, run this single command:${NC}"
-echo -e "   ${GREEN}cd ~/${REPO_NAME} && screen -S xdc-install sudo ./install_xdc_rpc_wss.sh; cat ~/xdc-install-summary.txt 2>/dev/null || true${NC}"
+echo -e "   ${GREEN}cd ~/${REPO_NAME} && screen -L -S xdc-install sudo ./install_xdc_rpc_wss.sh; echo; echo '=== Screen log ==='; cat screenlog.0 2>/dev/null || true; echo; echo '=== Summary file ==='; cat ~/xdc-install-summary.txt 2>/dev/null || true${NC}"
 echo
 echo -e "${CYAN}After the screen session ends, the summary is automatically shown in your terminal.${NC}"
 echo -e "${CYAN}Detach from screen early with Ctrl+A then D. Reattach with: screen -r xdc-install${NC}"
