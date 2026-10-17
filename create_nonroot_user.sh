@@ -64,13 +64,11 @@ clear
 echo -e "${BOLD}${CYAN}"
 cat << 'EOF'
 ╔══════════════════════════════════════════════════════════════╗
-║         XDCoutpost.xyz – for Plugin RPCaaS                   ║
+║         XDCoutpost.xyz – for Plugin RPCaaS Operators         ║
 ║         Create Non-Root Sudo User                            ║
 ╚══════════════════════════════════════════════════════════════╝
 EOF
 echo -e "${NC}"
-
-header "New user details"
 
 prompt USERNAME "Username for the new account"
 prompt PASSWORD "Password for the new account"
