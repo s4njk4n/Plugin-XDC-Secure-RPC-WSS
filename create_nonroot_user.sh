@@ -132,7 +132,6 @@ echo
 echo -e "${CYAN}After the screen session ends you can view:${NC}"
 echo -e "   Summary:     ${GREEN}cat xdc-install-summary.txt${NC}"
 echo -e "   Full log:    ${GREEN}cat screenlog.0${NC}"
-echo -e "${CYAN}(The full log is only created if you used the -L flag above.)${NC}"
 echo -e "${CYAN}Detach from screen early with Ctrl+A then D. Reattach with: screen -r xdc-install${NC}"
 echo
 echo
