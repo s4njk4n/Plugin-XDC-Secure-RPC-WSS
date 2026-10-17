@@ -64,8 +64,8 @@ clear
 echo -e "${BOLD}${CYAN}"
 cat << 'EOF'
 ╔══════════════════════════════════════════════════════════════╗
-║         Plugin-XDC-Secure-RPC-WSS                            ║
-║         Create Non-Root Sudo User (Optional)                 ║
+║         XDCoutpost.xyz – Plugin RPCaaS                       ║
+║         Create Non-Root Sudo User                            ║
 ╚══════════════════════════════════════════════════════════════╝
 EOF
 echo -e "${NC}"
