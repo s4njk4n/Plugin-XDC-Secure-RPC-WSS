@@ -127,10 +127,10 @@ echo -e "   ${GREEN}ssh ${USERNAME}@${PUBLIC_IP}${NC}"
 echo
 
 echo -e "${BOLD}Once logged in, run this single command:${NC}"
-echo -e "   ${GREEN}cd ~/${REPO_NAME} && screen -S xdc-install sudo ./install_xdc_rpc_wss.sh${NC}"
+echo -e "   ${GREEN}cd ~/${REPO_NAME} && screen -S xdc-install sudo ./install_xdc_rpc_wss.sh; cat ~/xdc-install-summary.txt 2>/dev/null || true${NC}"
 echo
-echo -e "${CYAN}This starts a screen session and immediately launches the installer inside it.${NC}"
-echo -e "${CYAN}Detach later with Ctrl+A then D. Reattach with: screen -r xdc-install${NC}"
+echo -e "${CYAN}After the screen session ends, the summary is automatically shown in your terminal.${NC}"
+echo -e "${CYAN}Detach from screen early with Ctrl+A then D. Reattach with: screen -r xdc-install${NC}"
 echo
 echo -e "${CYAN}The repository has already been moved to:${NC} /home/${USERNAME}/${REPO_NAME}"
 echo
