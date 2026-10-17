@@ -125,7 +125,8 @@ echo -e "   ${GREEN}ssh ${USERNAME}@${PUBLIC_IP}${NC}"
 echo
 
 echo -e "${BOLD}Once logged in, run this single command:${NC}"
-echo -e "   ${GREEN}cd ~/${REPO_NAME} && screen -L -S xdc-install sudo ./install_xdc_rpc_wss.sh${NC}"
+# echo -e "   ${GREEN}cd ~/${REPO_NAME} && screen -L -S xdc-install sudo ./install_xdc_rpc_wss.sh${NC}"
+echo -e "   ${GREEN}cd ~/${REPO_NAME} && screen -L -S xdc-install sudo ./install_xdc_rpc_wss.sh; status=\$?; if [[ \$status -ne 0 ]]; then echo; echo '=== Installation failed — screen log ==='; cat screenlog.0 2>/dev/null || true; echo; echo '=== Summary file ==='; cat xdc-install-summary.txt 2>/dev/null || true; fi${NC}"
 echo
 echo -e "${CYAN}After the screen session ends you can view:${NC}"
 echo -e "   Summary:     ${GREEN}cat xdc-install-summary.txt${NC}"
