@@ -287,6 +287,11 @@ sed -i "s/^ENABLE_RPC=.*/ENABLE_RPC=true/" .env
 sed -i "s/^ENABLE_WS=.*/ENABLE_WS=true/" .env
 sed -i "s/^GC_MODE=.*/GC_MODE=full/" .env
 
+# Handle both mainnet (INSTANCE_NAME) and testnet (NODE_NAME)
+if grep -q '^NODE_NAME=' .env; then
+  sed -i "s/^NODE_NAME=.*/NODE_NAME=${INSTANCE_NAME}/" .env
+fi
+
 RPC_PORT=$(grep '^RPC_PORT=' .env | cut -d= -f2 || echo 8989)
 WS_PORT=$(grep '^WS_PORT=' .env | cut -d= -f2 || echo 8888)
 
