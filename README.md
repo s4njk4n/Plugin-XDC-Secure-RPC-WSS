@@ -221,3 +221,6 @@ This is provided as-is. Please read the scripts before running them. You are res
 
 **Author:** [s4njk4n](https://github.com/s4njk4n)  
 More info: [XDCoutpost.xyz](https://xdcoutpost.xyz)
+
+Special thanks to inv4fee2020 for the earlier XDC node installer work and for the color scheme that inspired this recreation. This project is an independent rewrite and does not reuse the original scripts.
+
