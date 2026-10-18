@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="header-image.jpg" alt="Plugin XDC Secure RPC & WSS Installer" width="100%" />
+</p>
+
 # Plugin-XDC-Secure-RPC-WSS
 
 Simple installer for Plugin RPCaaS operators.  
