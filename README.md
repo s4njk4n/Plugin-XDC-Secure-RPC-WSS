@@ -115,6 +115,8 @@ cat ~/Plugin-XDC-Secure-RPC-WSS/xdc-install-summary.txt
 
 ### Test your RPC endpoint
 
+**Important:** This must be run from an IP address that was whitelisted during installation (or added later with `manage_whitelist.sh`). Requests from other IPs will receive a 403 Forbidden response.
+
 Replace `yourdomain.com` with your real domain:
 
 ```bash
@@ -125,6 +127,24 @@ curl -H "Content-Type: application/json" \
 
 Mainnet should return `"result":"50"`.  
 Testnet should return `"result":"51"`.
+
+### Test your WSS endpoint
+
+From a whitelisted IP, you can test the WebSocket endpoint with `wscat`:
+
+```bash
+# Install once if needed
+sudo npm install -g wscat
+
+# Connect
+wscat -c wss://yourdomain.com/xdcwss
+
+# Once connected, paste this and press Enter:
+{"jsonrpc":"2.0","method":"net_version","params":[],"id":1}
+```
+
+You should see a response with `"result":"50"` (mainnet) or `"result":"51"` (testnet).  
+Press `Ctrl+C` or type `exit` to quit.
 
 ### Manage who is allowed to connect
 
