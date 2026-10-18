@@ -94,6 +94,12 @@ if [[ "$NETWORK" != "mainnet" && "$NETWORK" != "testnet" ]]; then
   exit 1
 fi
 
+prompt GC_MODE "Node type: full (pruned, less disk) or archive (full history)" "full"
+if [[ "$GC_MODE" != "full" && "$GC_MODE" != "archive" ]]; then
+  error "GC_MODE must be 'full' or 'archive'."
+  exit 1
+fi
+
 prompt INSTANCE_NAME "Node name (shown on network stats)" "XDCoutpost.xyz_Secure_XDC_Node"
 prompt CONTACT_EMAIL "Contact email"
 
@@ -285,7 +291,7 @@ sed -i "s/^INSTANCE_NAME=.*/INSTANCE_NAME=${INSTANCE_NAME}/" .env
 sed -i "s/^CONTACT_DETAILS=.*/CONTACT_DETAILS=${CONTACT_EMAIL}/" .env
 sed -i "s/^ENABLE_RPC=.*/ENABLE_RPC=true/" .env
 sed -i "s/^ENABLE_WS=.*/ENABLE_WS=true/" .env
-sed -i "s/^GC_MODE=.*/GC_MODE=full/" .env
+sed -i "s/^GC_MODE=.*/GC_MODE=${GC_MODE}/" .env
 
 # Handle both mainnet (INSTANCE_NAME) and testnet (NODE_NAME)
 if grep -q '^NODE_NAME=' .env; then
