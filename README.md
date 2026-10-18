@@ -113,6 +113,21 @@ When it finishes it will show your final RPC and WSS addresses and save a summar
 cat ~/Plugin-XDC-Secure-RPC-WSS/xdc-install-summary.txt
 ```
 
+### Manage who is allowed to connect
+
+To add or remove IP addresses at any stage:
+
+```bash
+cd ~/Plugin-XDC-Secure-RPC-WSS
+sudo ./manage_whitelist.sh
+```
+
+The whitelist manager looks like this:
+
+<img src="screenshots/manage_whitelist.png" width="720" alt="manage_whitelist.sh menu">
+
+Use the menu to view, add, or remove IPs. Changes take effect immediately.
+
 ### Test your RPC endpoint
 
 **Important:** This must be run from an IP address that was whitelisted during installation (or added later with `manage_whitelist.sh`). Requests from other IPs will receive a 403 Forbidden response.
@@ -145,21 +160,6 @@ wscat -c wss://yourdomain.com/xdcwss
 
 You should see a response with `"result":"50"` (mainnet) or `"result":"51"` (testnet).  
 Press `Ctrl+C` or type `exit` to quit.
-
-### Manage who is allowed to connect
-
-To add or remove IP addresses later:
-
-```bash
-cd ~/Plugin-XDC-Secure-RPC-WSS
-sudo ./manage_whitelist.sh
-```
-
-The whitelist manager looks like this:
-
-<img src="screenshots/manage_whitelist.png" width="720" alt="manage_whitelist.sh menu">
-
-Use the menu to view, add, or remove IPs. Changes take effect immediately.
 
 ### Useful commands
 
