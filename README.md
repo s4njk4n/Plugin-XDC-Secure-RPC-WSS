@@ -34,6 +34,10 @@ Recommended server size for a full node:
 
 SSH into your server as the `root` user.
 
+```bash
+ssh root@YOUR_SERVER_IP
+```
+
 ### Step 2 – Download the installer and create a normal user
 
 Copy and paste this entire line into your terminal and press Enter:
