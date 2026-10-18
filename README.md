@@ -38,6 +38,10 @@ Copy and paste this entire line into your terminal and press Enter:
 git clone https://github.com/s4njk4n/Plugin-XDC-Secure-RPC-WSS.git && cd Plugin-XDC-Secure-RPC-WSS && chmod +x *.sh && bash ./create_nonroot_user.sh
 ```
 
+The script will look like this:
+
+<img src="screenshots/create_nonroot_user.png" width="720" alt="create_nonroot_user.sh menu">
+
 The script will ask you for:
 - A username
 - A password
@@ -70,7 +74,11 @@ Once you are logged in as the new user, copy and paste this entire line:
 cd ~/Plugin-XDC-Secure-RPC-WSS && screen -L -S xdc-install sudo ./install_xdc_rpc_wss.sh; status=$?; echo; echo '=== Screen log ==='; cat screenlog.0 2>/dev/null || true; if [[ $status -ne 0 ]]; then echo; echo '=== Summary / error note ==='; cat xdc-install-summary.txt 2>/dev/null || true; fi
 ```
 
-The installer will ask you questions. Answer them carefully:
+The installer will ask you a series of questions like this:
+
+<img src="screenshots/install_menu.png" width="720" alt="install_xdc_rpc_wss.sh prompts">
+
+Answer the installers questions carefully:
 
 - Network: type `mainnet` or `testnet`
 - Node name: any name you like (it shows on network stats)
@@ -122,6 +130,10 @@ To add or remove IP addresses later:
 cd ~/Plugin-XDC-Secure-RPC-WSS
 sudo ./manage_whitelist.sh
 ```
+
+The whitelist manager looks like this:
+
+<img src="screenshots/manage_whitelist.png" width="720" alt="manage_whitelist.sh menu">
 
 Use the menu to view, add, or remove IPs. Changes take effect immediately.
 
