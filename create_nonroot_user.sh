@@ -1,5 +1,5 @@
 #!/bin/bash
-# Optional companion script: create a non-root sudo user
+# Companion script: create a non-root sudo user
 # and move the Plugin-XDC-Secure-RPC-WSS repo into their home
 
 set -euo pipefail
