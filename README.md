@@ -42,10 +42,6 @@ Copy and paste this entire line into your terminal and press Enter:
 git clone https://github.com/s4njk4n/Plugin-XDC-Secure-RPC-WSS.git && cd Plugin-XDC-Secure-RPC-WSS && chmod +x *.sh && bash ./create_nonroot_user.sh
 ```
 
-The script will look like this:
-
-<img src="screenshots/create_nonroot_user.png" width="720" alt="create_nonroot_user.sh menu">
-
 The script will ask you for:
 - A username
 - A password
