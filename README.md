@@ -1,5 +1,3 @@
-Note: This installer below can be used for any full node installation on XDC Network. It is labelled as for Plugin as it specifically asks if the installer would like to Whitelist the IP address of Plugin's amazing RPCaaS service. Other than that it will work fine for anyone installing a node. If its just a general node and not wanting external RPC/WSS access, just dont whitelist ANY IP addresses.
-
 <p align="center">
   <img src="header.jpg" alt="Plugin XDC Secure RPC & WSS Installer" width="100%" />
 </p>
