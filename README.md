@@ -19,7 +19,7 @@ It sets up a secure XDC node (Mainnet or Apothem Testnet) and gives you private 
 - Root access (you can log in as `root`)
 - A domain name (example: `node.example.com`)
 - The domain’s **A record must already point** to your server’s public IP address
-- Ports 22, 80, 443, and 30303 open (most VPS providers have these open by default)
+- Ports 22 (SSH), 80, 443, and 30303 open (most VPS providers have these open by default)
 
 Recommended server size for a full node:
 - 6+ CPU cores
@@ -70,7 +70,7 @@ Now SSH back in using the new username (replace `YOUR_USERNAME` and `YOUR_SERVER
 ssh YOUR_USERNAME@YOUR_SERVER_IP
 ```
 
-### Step 4 – Run the main installer (inside a screen session)
+### Step 4 – Run the main installer
 
 Once you are logged in as the new user, copy and paste this entire line:
 
