@@ -86,30 +86,22 @@ The installer will ask you a series of questions like this:
 Answer the installers questions carefully:
 
 - Network: type `mainnet` or `testnet`
+- Node type
+  - `full` — pruned node (lower disk usage; recommended for most RPC use)
+  - `archive` — keeps full history (needs more disk space)
+- Enabled APIs
+  - Default: `eth,net,web3`
+  - Archive nodes also enable `debug` by default
+  - Optional extras: `db,txpool,XDPoS`
+  - Avoid `admin` and `personal` unless you specifically need them and understand the risks
 - Node name: any name you like (it shows on network stats)
 - Contact email: your email
 - Domain name: the domain that already points to this server
 - Let’s Encrypt email: usually the same email
 - SSH port: usually just press Enter for `22`
-- Download snapshot: recommended to choose `y` (much faster)
-- Whitelist IPs: it will offer to add the Plugin RPCaaS IP. Add any other IPs you want to allow.
-
-**Node configuration options**
-
-The installer also lets you choose:
-
-- **Node type**
-  - `full` — pruned node (lower disk usage; recommended for most RPC use)
-  - `archive` — keeps full history (needs more disk space)
-
-- **Enabled APIs**
-  - Default: `eth,net,web3`
-  - Archive nodes also enable `debug` by default
-  - Optional extras: `db,txpool,XDPoS`
-  - Avoid `admin` and `personal` unless you specifically need them and understand the risks
-
-- **Chain snapshot**
+- Chain snapshot
   - Choosing `y` downloads the official snapshot and automatically extracts + integrates it (much faster than syncing from genesis)
+- Whitelist IPs: it will offer to add the Plugin RPCaaS IP. Add any other IPs you want to allow.
 
 **Important tips while the installer is running:**
 - The installation can take a long time (especially if downloading the snapshot).
