@@ -75,6 +75,14 @@ yesno() {
   done
 }
 
+# ========== Configurable snapshot URLs ==========
+# Override these if the official locations change.
+# Leave empty to skip a particular snapshot type.
+MAINNET_FULL_SNAPSHOT="https://download.xinfin.network/xdcchain.tar"
+MAINNET_ARCHIVE_SNAPSHOT="https://downloads.xinfin.network/xdcchain_archive.tar"
+TESTNET_FULL_SNAPSHOT="https://downloads.apothem.network/xdcchain.tar"
+TESTNET_ARCHIVE_SNAPSHOT="https://downloads.apothem.network/xdcchain_archive.tar"
+
 # ========== Interactive configuration ==========
 clear
 echo -e "${BOLD}${CYAN}"
@@ -386,15 +394,15 @@ if [[ "$USE_SNAPSHOT" == true ]]; then
   # Select correct snapshot based on NETWORK + GC_MODE
   if [[ "$NETWORK" == "mainnet" ]]; then
     if [[ "$GC_MODE" == "archive" ]]; then
-      SNAPSHOT_URL="https://downloads.xinfin.network/xdcchain_archive.tar"
+      SNAPSHOT_URL="$MAINNET_ARCHIVE_SNAPSHOT"
     else
-      SNAPSHOT_URL="https://download.xinfin.network/xdcchain.tar"
+      SNAPSHOT_URL="$MAINNET_FULL_SNAPSHOT"
     fi
   else  # testnet / apothem
     if [[ "$GC_MODE" == "archive" ]]; then
-      SNAPSHOT_URL="https://downloads.apothem.network/xdcchain_archive.tar"
+      SNAPSHOT_URL="$TESTNET_ARCHIVE_SNAPSHOT"
     else
-      SNAPSHOT_URL="https://downloads.apothem.network/xdcchain.tar"
+      SNAPSHOT_URL="$TESTNET_FULL_SNAPSHOT"
     fi
   fi
 
