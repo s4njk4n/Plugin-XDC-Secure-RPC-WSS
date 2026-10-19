@@ -102,14 +102,14 @@ fi
 
 info "Available APIs:"
 info "  eth,net,web3                  (recommended default)"
-info "  debug                         (recommended for archive nodes)"
+info "  debug,trace                   (recommended for archive nodes)"
 info "  db,txpool,XDPoS               (optional extras)"
 info "  admin,personal                (dangerous if exposed — avoid)"
 info "  miner                         (rarely needed)"
 
 DEFAULT_API="eth,net,web3"
 if [[ "$GC_MODE" == "archive" ]]; then
-  DEFAULT_API="${DEFAULT_API},debug"
+  DEFAULT_API="${DEFAULT_API},debug,trace"
 fi
 
 prompt API "Comma-separated APIs to enable" "$DEFAULT_API"
