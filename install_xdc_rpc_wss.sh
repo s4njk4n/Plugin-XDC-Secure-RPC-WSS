@@ -100,6 +100,29 @@ if [[ "$GC_MODE" != "full" && "$GC_MODE" != "archive" ]]; then
   exit 1
 fi
 
+info "Available APIs:"
+info "  eth,net,web3                  (recommended default)"
+info "  debug,trace                   (recommended for archive nodes)"
+info "  db,txpool,XDPoS               (optional extras)"
+info "  admin,personal                (dangerous if exposed — avoid)"
+info "  miner                         (rarely needed)"
+
+DEFAULT_API="eth,net,web3"
+if [[ "$GC_MODE" == "archive" ]]; then
+  DEFAULT_API="${DEFAULT_API},debug,trace"
+  # info "Archive mode selected — 'debug' and 'trace' added to the suggested list"
+fi
+
+prompt API "Comma-separated APIs to enable" "$DEFAULT_API"
+
+# Safety warning
+if [[ "$API" == *admin* || "$API" == *personal* ]]; then
+  warn "You included 'admin' and/or 'personal'. These can be dangerous if the endpoint is reachable."
+  if ! yesno "Continue anyway?" "n"; then
+    exit 1
+  fi
+fi
+
 prompt INSTANCE_NAME "Node name (shown on network stats)" "XDCoutpost.xyz_Secure_XDC_Node"
 prompt CONTACT_EMAIL "Contact email"
 
@@ -292,6 +315,7 @@ sed -i "s/^CONTACT_DETAILS=.*/CONTACT_DETAILS=${CONTACT_EMAIL}/" .env
 sed -i "s/^ENABLE_RPC=.*/ENABLE_RPC=true/" .env
 sed -i "s/^ENABLE_WS=.*/ENABLE_WS=true/" .env
 sed -i "s/^GC_MODE=.*/GC_MODE=${GC_MODE}/" .env
+sed -i "s|^API=.*|API=${API}|" .env
 
 # Handle both mainnet (INSTANCE_NAME) and testnet (NODE_NAME)
 if grep -q '^NODE_NAME=' .env; then
