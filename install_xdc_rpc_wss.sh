@@ -381,8 +381,25 @@ if [[ "$USE_SNAPSHOT" == true ]]; then
   mkdir -p "$SNAP_DIR"
   cd "$SNAP_DIR"
 
-  info "Downloading xdcchain.tar (this can take a long time)..."
-  if ! aria2c -x 8 -s 8 -k 1M --continue=true https://download.xinfin.network/xdcchain.tar; then
+  # Select correct snapshot based on NETWORK + GC_MODE
+  if [[ "$NETWORK" == "mainnet" ]]; then
+    if [[ "$GC_MODE" == "archive" ]]; then
+      SNAPSHOT_URL="http://downloads.xinfin.network/xdcchain_archive.tar"
+    else
+      SNAPSHOT_URL="https://download.xinfin.network/xdcchain.tar"
+    fi
+  else  # testnet / apothem
+    if [[ "$GC_MODE" == "archive" ]]; then
+      SNAPSHOT_URL="http://downloads.apothem.network/xdcchain_archive.tar"
+    else
+      SNAPSHOT_URL="http://downloads.apothem.network/xdcchain.tar"
+    fi
+  fi
+
+  info "Using snapshot: $SNAPSHOT_URL"
+
+  info "Downloading snapshot (this can take a long time)..."
+  if ! aria2c -x 8 -s 8 -k 1M --continue=true "$SNAPSHOT_URL"; then
     error "aria2c download failed."
     ls -lh || true
     df -h /tmp "$CHAIN_DIR" || true
