@@ -458,7 +458,17 @@ if [[ "$USE_SNAPSHOT" == true ]]; then
   fi
 
   info "Extracting snapshot (this can take a long time — progress updates every few thousand files)..."
-  if ! tar -xf "$SNAPSHOT_FILE" --checkpoint=5000 --checkpoint-action=echo="  ... extracted %u files"; then
+
+  # Auto-detect gzip vs plain tar
+  if file "$SNAPSHOT_FILE" | grep -q 'gzip compressed'; then
+    info "Detected gzip-compressed snapshot."
+    tar_cmd=(tar -xzf "$SNAPSHOT_FILE")
+  else
+    info "Detected plain tar snapshot."
+    tar_cmd=(tar -xf "$SNAPSHOT_FILE")
+  fi
+
+  if ! "${tar_cmd[@]}" --checkpoint=5000 --checkpoint-action=echo="  ... extracted %u files"; then
     error "tar extract failed."
     ls -lh || true
     exit 1
