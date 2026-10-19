@@ -411,6 +411,40 @@ if [[ "$USE_SNAPSHOT" == true ]]; then
   # Derive the filename from the URL (handles both xdcchain.tar and xdcchain_archive.tar)
   SNAPSHOT_FILE=$(basename "$SNAPSHOT_URL")
 
+  # ========== Disk space check based on remote file size ==========
+  info "Checking remote snapshot size and local disk space..."
+
+  # Get Content-Length of the remote file (bytes)
+  REMOTE_SIZE=$(curl -sI --max-time 30 "$SNAPSHOT_URL" | grep -i '^Content-Length:' | awk '{print $2}' | tr -d '\r' || true)
+
+  if [[ -z "$REMOTE_SIZE" || ! "$REMOTE_SIZE" =~ ^[0-9]+$ ]]; then
+    warn "Could not determine remote snapshot size. Skipping precise disk check."
+  else
+    # Convert to human-readable for display
+    REMOTE_GB=$(awk "BEGIN {printf \"%.1f\", $REMOTE_SIZE / 1024 / 1024 / 1024}")
+
+    # Required free space = 2 × file size + 200 GB
+    REQUIRED_BYTES=$(( REMOTE_SIZE * 2 + 200 * 1024 * 1024 * 1024 ))
+    REQUIRED_GB=$(awk "BEGIN {printf \"%.1f\", $REQUIRED_BYTES / 1024 / 1024 / 1024}")
+
+    # Available space on the volume that will hold the snapshot
+    AVAIL_BYTES=$(df -B1 "$CHAIN_DIR" | awk 'NR==2 {print $4}')
+    AVAIL_GB=$(awk "BEGIN {printf \"%.1f\", $AVAIL_BYTES / 1024 / 1024 / 1024}")
+
+    info "Snapshot size:          ${REMOTE_GB} GB"
+    info "Required free space:    ${REQUIRED_GB} GB  (2× file + 200 GB headroom)"
+    info "Available free space:   ${AVAIL_GB} GB"
+
+    if [[ "$AVAIL_BYTES" -lt "$REQUIRED_BYTES" ]]; then
+      error "Not enough free disk space."
+      error "Need at least ${REQUIRED_GB} GB free; only ${AVAIL_GB} GB available."
+      error "Free up space or use a larger volume, then re-run the installer."
+      exit 1
+    fi
+
+    success "Sufficient disk space available."
+  fi
+
   info "Downloading snapshot (this can take a long time)..."
   if ! aria2c -x 8 -s 8 -k 1M --continue=true "$SNAPSHOT_URL"; then
     error "aria2c download failed."
