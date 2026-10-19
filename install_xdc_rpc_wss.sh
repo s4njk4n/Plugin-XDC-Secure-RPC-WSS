@@ -527,10 +527,12 @@ rm -f /etc/nginx/sites-enabled/default
 nginx -t && systemctl reload nginx || systemctl start nginx
 
 header "Obtaining Let's Encrypt certificate"
-certbot --nginx -d "${DOMAIN}" --non-interactive --agree-tos -m "${CERT_EMAIL}" --redirect || {
-  warn "Certbot failed. Ensure the DNS A record points to this server and ports 80/443 are open."
-  warn "You can re-run certbot later: certbot --nginx -d ${DOMAIN}"
-}
+if ! certbot --nginx -d "${DOMAIN}" --non-interactive --agree-tos -m "${CERT_EMAIL}" --redirect; then
+  error "Certbot failed. Ensure the DNS A record points to this server and ports 80/443 are open."
+  error "You can re-run certbot later: certbot --nginx -d ${DOMAIN}"
+  error "Then re-run this installer or manually finish the Nginx configuration."
+  exit 1
+fi
 
 # Build allow lines with labels
 ALLOW_LINES=""
