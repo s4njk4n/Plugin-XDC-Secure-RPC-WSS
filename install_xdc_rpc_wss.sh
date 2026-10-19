@@ -599,6 +599,9 @@ SUMMARY_FILE="${REAL_HOME}/Plugin-XDC-Secure-RPC-WSS/xdc-install-summary.txt"
 {
   echo "=== Installation complete ==="
   echo
+  echo "Node type: $GC_MODE"
+  echo "APIs:      $API"
+  echo
   echo "RPC:  https://${HOST}/xdcrpc"
   echo "WSS:  wss://${HOST}/xdcwss"
   echo
@@ -630,7 +633,7 @@ SUMMARY_FILE="${REAL_HOME}/Plugin-XDC-Secure-RPC-WSS/xdc-install-summary.txt"
 success "Summary also saved to: $SUMMARY_FILE"
 
 # ========== Final output ==========
-header "Installation complete"
+header "Installation complete
 echo -e "${GREEN}RPC:${NC}  https://${HOST}/xdcrpc"
 echo -e "${GREEN}WSS:${NC}  wss://${HOST}/xdcwss"
 echo
