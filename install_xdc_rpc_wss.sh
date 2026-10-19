@@ -242,6 +242,8 @@ fi
 echo
 info "Summary of configuration:"
 echo "  Network:        $NETWORK"
+echo "  Node type:      $GC_MODE"
+echo "  APIs:           $API"
 echo "  Instance name:  $INSTANCE_NAME"
 echo "  Domain:         $DOMAIN"
 echo "  SSH port:       $SSH_PORT"
