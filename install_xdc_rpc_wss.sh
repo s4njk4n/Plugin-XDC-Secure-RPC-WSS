@@ -694,7 +694,7 @@ SUMMARY_FILE="${REAL_HOME}/Plugin-XDC-Secure-RPC-WSS/xdc-install-summary.txt"
 success "Summary also saved to: $SUMMARY_FILE"
 
 # ========== Final output ==========
-header "Installation complete
+header "Installation complete"
 echo -e "${GREEN}RPC:${NC}  https://${HOST}/xdcrpc"
 echo -e "${GREEN}WSS:${NC}  wss://${HOST}/xdcwss"
 echo
