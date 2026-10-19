@@ -187,12 +187,18 @@ prompt SSH_PORT "SSH port" "22"
 
 # ========== Snapshot option ==========
 header "Chain snapshot"
-if yesno "Download the official chain snapshot? (much faster sync, but a large download)" "y"; then
-  USE_SNAPSHOT=true
-  info "Snapshot selected."
+if [[ "$NETWORK" == "mainnet" ]]; then
+  if yesno "Download the official chain snapshot? (much faster sync, but a large download)" "y"; then
+    USE_SNAPSHOT=true
+    info "Snapshot selected."
+  else
+    USE_SNAPSHOT=false
+    info "Will sync from genesis (slower)."
+  fi
 else
   USE_SNAPSHOT=false
-  info "Will sync from genesis (slower)."
+  info "Snapshot download is currently only offered for mainnet."
+  info "Testnet node will sync from genesis."
 fi
 
 # ========== IP whitelist collection ==========
