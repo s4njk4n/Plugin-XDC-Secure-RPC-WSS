@@ -400,6 +400,9 @@ if [[ "$USE_SNAPSHOT" == true ]]; then
 
   info "Using snapshot: $SNAPSHOT_URL"
 
+  # Derive the filename from the URL (handles both xdcchain.tar and xdcchain_archive.tar)
+  SNAPSHOT_FILE=$(basename "$SNAPSHOT_URL")
+
   info "Downloading snapshot (this can take a long time)..."
   if ! aria2c -x 8 -s 8 -k 1M --continue=true "$SNAPSHOT_URL"; then
     error "aria2c download failed."
@@ -409,7 +412,7 @@ if [[ "$USE_SNAPSHOT" == true ]]; then
   fi
 
   info "Extracting snapshot (this can take a long time — progress updates every few thousand files)..."
-  if ! tar -xf xdcchain.tar --checkpoint=5000 --checkpoint-action=echo="  ... extracted %u files"; then
+  if ! tar -xf "$SNAPSHOT_FILE" --checkpoint=5000 --checkpoint-action=echo="  ... extracted %u files"; then
     error "tar extract failed."
     ls -lh || true
     exit 1
