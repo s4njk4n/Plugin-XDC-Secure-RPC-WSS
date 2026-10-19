@@ -5,7 +5,8 @@
 # Plugin-XDC-Secure-RPC-WSS
 
 Simple installer for Plugin RPCaaS operators.  
-It sets up a secure XDC node (Mainnet or Apothem Testnet) and gives you private RPC and WebSocket endpoints that only allow the IP addresses you choose.
+
+It sets up a secure XDC node (Mainnet or Apothem Testnet) and gives you private RPC and WebSocket endpoints that only allow the IP addresses you choose. The installer can optionally download the official chain snapshot and automatically integrate it, so the node reaches a usable state much faster than syncing from genesis.
 
 **What you will get:**
 - RPC: `https://yourdomain.com/xdcrpc`
@@ -92,6 +93,23 @@ Answer the installers questions carefully:
 - SSH port: usually just press Enter for `22`
 - Download snapshot: recommended to choose `y` (much faster)
 - Whitelist IPs: it will offer to add the Plugin RPCaaS IP. Add any other IPs you want to allow.
+
+**Node configuration options**
+
+The installer also lets you choose:
+
+- **Node type**
+  - `full` — pruned node (lower disk usage; recommended for most RPC use)
+  - `archive` — keeps full history (needs more disk space)
+
+- **Enabled APIs**
+  - Default: `eth,net,web3`
+  - Archive nodes also enable `debug` by default
+  - Optional extras: `db,txpool,XDPoS`
+  - Avoid `admin` and `personal` unless you specifically need them and understand the risks
+
+- **Chain snapshot**
+  - Choosing `y` downloads the official snapshot and automatically extracts + integrates it (much faster than syncing from genesis)
 
 **Important tips while the installer is running:**
 - The installation can take a long time (especially if downloading the snapshot).
