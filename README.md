@@ -91,7 +91,7 @@ Answer the installers questions carefully:
   - `archive` — keeps full history (needs more disk space)
 - Enabled APIs
   - Default: `eth,net,web3`
-  - Archive nodes also enable `debug` by default
+  - Archive nodes also enable `debug,trace` by default
   - Optional extras: `db,txpool,XDPoS`
   - Avoid `admin` and `personal` unless you specifically need them and understand the risks
 - Node name: any name you like (it shows on network stats)
