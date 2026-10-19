@@ -386,15 +386,15 @@ if [[ "$USE_SNAPSHOT" == true ]]; then
   # Select correct snapshot based on NETWORK + GC_MODE
   if [[ "$NETWORK" == "mainnet" ]]; then
     if [[ "$GC_MODE" == "archive" ]]; then
-      SNAPSHOT_URL="http://downloads.xinfin.network/xdcchain_archive.tar"
+      SNAPSHOT_URL="https://downloads.xinfin.network/xdcchain_archive.tar"
     else
       SNAPSHOT_URL="https://download.xinfin.network/xdcchain.tar"
     fi
   else  # testnet / apothem
     if [[ "$GC_MODE" == "archive" ]]; then
-      SNAPSHOT_URL="http://downloads.apothem.network/xdcchain_archive.tar"
+      SNAPSHOT_URL="https://downloads.apothem.network/xdcchain_archive.tar"
     else
-      SNAPSHOT_URL="http://downloads.apothem.network/xdcchain.tar"
+      SNAPSHOT_URL="https://downloads.apothem.network/xdcchain.tar"
     fi
   fi
 
