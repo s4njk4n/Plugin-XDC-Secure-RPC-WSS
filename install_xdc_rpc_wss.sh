@@ -21,15 +21,13 @@ header()  { echo -e "\n${BOLD}${BLUE}=== $* ===${NC}\n"; }
 
 # Log failures to the summary file so they are visible after screen exits
 trap '
-  SUMMARY_FILE="${REAL_HOME}/Plugin-XDC-Secure-RPC-WSS/xdc-install-summary.txt"
+  SUMMARY_FILE="${REAL_HOME:-$HOME}/Plugin-XDC-Secure-RPC-WSS/xdc-install-summary.txt"
   {
     echo "=== INSTALLATION FAILED ==="
     echo "Date: $(date)"
     echo "Failed at line $LINENO (exit code $?)"
     echo
-    echo "Last known location: Preparing for / downloading chain snapshot"
-    echo
-    echo "Check disk space and the aria2c / tar output above."
+    echo "Check the screen log and the output above for the exact error."
   } > "$SUMMARY_FILE" 2>/dev/null || true
   error "Script failed at line $LINENO (exit code $?)"
   echo "Details written to: $SUMMARY_FILE"
