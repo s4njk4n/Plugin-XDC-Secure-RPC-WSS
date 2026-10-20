@@ -386,6 +386,7 @@ if [[ "$USE_SNAPSHOT" == true ]]; then
 
   header "Downloading chain snapshot"
   SNAP_DIR="$CHAIN_DIR/snapshot-download"
+  rm -rf "$SNAP_DIR"
   mkdir -p "$SNAP_DIR"
   cd "$SNAP_DIR"
 
