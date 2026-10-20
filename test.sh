@@ -21,7 +21,8 @@ header()  { echo -e "\n${BOLD}${BLUE}=== $* ===${NC}\n"; }
 
 # Log failures to the summary file so they are visible after screen exits
 trap '
-  SUMMARY_FILE="${REAL_HOME:-$HOME}/Plugin-XDC-Secure-RPC-WSS/xdc-install-summary.txt"
+  local_home="${REAL_HOME:-$HOME}"
+  SUMMARY_FILE="${local_home}/Plugin-XDC-Secure-RPC-WSS/xdc-install-summary.txt"
   {
     echo "=== INSTALLATION FAILED ==="
     echo "Date: $(date)"
@@ -275,6 +276,14 @@ fi
 NODE_DIR="$REAL_HOME/XinFin-Node"
 CHAIN_DIR="$NODE_DIR/$NETWORK"
 
+# Chain data directory differs between mainnet and testnet
+if [[ "$NETWORK" == "testnet" ]]; then
+  CHAIN_DATA_DIR="$CHAIN_DIR/xdcchain-testnet"
+else
+  CHAIN_DATA_DIR="$CHAIN_DIR/xdcchain"
+fi
+TARGET_XDC="$CHAIN_DATA_DIR/XDC"
+
 # ========== System update & packages ==========
 header "Updating system and installing prerequisites"
 export DEBIAN_FRONTEND=noninteractive
@@ -378,10 +387,10 @@ if [[ "$USE_SNAPSHOT" == true ]]; then
   info "Stopping node..."
   docker compose -f docker-compose.yml down || true
 
-  # Remove only the inner XDC chain directory
-  if [[ -d "$CHAIN_DIR/xdcchain/XDC" ]]; then
-    info "Removing generated xdcchain/XDC directory..."
-    rm -rf "$CHAIN_DIR/xdcchain/XDC" || true
+  # Remove only the inner XDC chain directory (using correct path)
+  if [[ -d "$TARGET_XDC" ]]; then
+    info "Removing generated $TARGET_XDC directory..."
+    rm -rf "$TARGET_XDC" || true
   fi
 
   header "Downloading chain snapshot"
@@ -471,9 +480,9 @@ if [[ "$USE_SNAPSHOT" == true ]]; then
   success "Extraction finished."
 
   # ========== Place the snapshot into the node ==========
-  TARGET_XDC="$CHAIN_DIR/xdcchain/XDC"
+  # TARGET_XDC is already set above based on NETWORK
 
-  # The node has already created xdcchain/XDC with initial files.
+  # The node has already created the XDC directory with initial files.
   # Remove those so the snapshot can take their place.
   if [[ -d "$TARGET_XDC" ]]; then
     info "Removing initial contents of $TARGET_XDC created by the node..."
@@ -481,49 +490,58 @@ if [[ "$USE_SNAPSHOT" == true ]]; then
   fi
   mkdir -p "$TARGET_XDC"
 
-  if [[ -d XDC ]]; then
-    # Mainnet-style: tarball contains an XDC/ directory
-    info "Detected XDC/ wrapper (mainnet-style snapshot)."
-    # Move contents of the extracted XDC/ into the target
+  if [[ "$NETWORK" == "mainnet" ]]; then
+    # Mainnet snapshots contain an XDC/ directory
+    if [[ ! -d XDC ]]; then
+      error "Mainnet snapshot did not contain an XDC/ directory after extraction."
+      ls -lh || true
+      exit 1
+    fi
+    info "Moving mainnet XDC/ contents into place..."
     shopt -s dotglob
-    mv XDC/* "$TARGET_XDC/" || true
+    if ! mv XDC/* "$TARGET_XDC/"; then
+      error "Failed to move XDC contents into $TARGET_XDC"
+      exit 1
+    fi
     shopt -u dotglob
     rmdir XDC 2>/dev/null || true
 
-    # Clean node-specific files
-    rm -f "$TARGET_XDC/nodekey" "$TARGET_XDC/transactions.rlp" || true
-
-    if [[ -n "${SUDO_USER:-}" ]]; then
-      chown -R "$SUDO_USER:$SUDO_USER" "$CHAIN_DIR/xdcchain" || true
-    fi
-    success "Snapshot installed at $TARGET_XDC (nodekey and transactions.rlp removed)"
-
   else
-    # Testnet-style: contents of XDC/ are at the root of the tarball
-    # (chaindata/, nodes/, rewards/, etc.)
-    info "No XDC/ wrapper found — treating extract root as contents of XDC/ (testnet-style)."
-
+    # Testnet snapshots have the contents of XDC/ at the root of the tarball
+    info "Moving testnet snapshot contents into place..."
     if [[ ! -d chaindata && ! -d nodes && ! -d lightchaindata && ! -d rewards ]]; then
-      warn "No recognised chain directories found after extract. Starting without snapshot."
+      error "Testnet snapshot did not contain recognised chain directories (chaindata/, nodes/, etc.)."
       ls -lh || true
-    else
-      # Move everything extracted (except the tarball) into the target XDC/
-      shopt -s dotglob
-      for item in *; do
-        [[ "$item" == "$SNAPSHOT_FILE" ]] && continue
-        mv "$item" "$TARGET_XDC/" || true
-      done
-      shopt -u dotglob
-
-      # Clean node-specific files
-      rm -f "$TARGET_XDC/nodekey" "$TARGET_XDC/transactions.rlp" || true
-
-      if [[ -n "${SUDO_USER:-}" ]]; then
-        chown -R "$SUDO_USER:$SUDO_USER" "$CHAIN_DIR/xdcchain" || true
-      fi
-      success "Snapshot contents installed into $TARGET_XDC (nodekey and transactions.rlp removed)"
+      exit 1
     fi
+
+    shopt -s dotglob
+    for item in *; do
+      [[ "$item" == "$SNAPSHOT_FILE" ]] && continue
+      if ! mv "$item" "$TARGET_XDC/"; then
+        error "Failed to move $item into $TARGET_XDC"
+        exit 1
+      fi
+    done
+    shopt -u dotglob
   fi
+
+  # Clean node-specific files that must not be reused
+  rm -f "$TARGET_XDC/nodekey" "$TARGET_XDC/transactions.rlp" || true
+
+  # Ownership
+  if [[ -n "${SUDO_USER:-}" ]]; then
+    chown -R "$SUDO_USER:$SUDO_USER" "$CHAIN_DATA_DIR" || true
+  fi
+
+  # Verification
+  if [[ ! -d "$TARGET_XDC/chaindata" && ! -d "$TARGET_XDC/nodes" ]]; then
+    error "Snapshot placement verification failed — chaindata/ or nodes/ not found in $TARGET_XDC"
+    ls -lh "$TARGET_XDC" || true
+    exit 1
+  fi
+
+  success "Snapshot successfully installed at $TARGET_XDC"
 
   # Cleanup
   cd /
