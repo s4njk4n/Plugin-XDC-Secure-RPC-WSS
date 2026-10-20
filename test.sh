@@ -469,31 +469,64 @@ if [[ "$USE_SNAPSHOT" == true ]]; then
   fi
   success "Extraction finished."
 
-  if [[ -d XDC ]]; then
-    # Clean files that must not be reused
-    rm -f XDC/nodekey XDC/transactions.rlp || true
+  # ========== Place the snapshot into the node ==========
+  TARGET_XDC="$CHAIN_DIR/xdcchain/XDC"
 
-    # Place the new XDC directory where the node expects it
-    if mv XDC "$CHAIN_DIR/xdcchain/XDC"; then
-      # Fix ownership
+  # The node has already created xdcchain/XDC with initial files.
+  # Remove those so the snapshot can take their place.
+  if [[ -d "$TARGET_XDC" ]]; then
+    info "Removing initial contents of $TARGET_XDC created by the node..."
+    rm -rf "$TARGET_XDC" || true
+  fi
+  mkdir -p "$TARGET_XDC"
+
+  if [[ -d XDC ]]; then
+    # Mainnet-style: tarball contains an XDC/ directory
+    info "Detected XDC/ wrapper (mainnet-style snapshot)."
+    # Move contents of the extracted XDC/ into the target
+    shopt -s dotglob
+    mv XDC/* "$TARGET_XDC/" || true
+    shopt -u dotglob
+    rmdir XDC 2>/dev/null || true
+
+    # Clean node-specific files
+    rm -f "$TARGET_XDC/nodekey" "$TARGET_XDC/transactions.rlp" || true
+
+    if [[ -n "${SUDO_USER:-}" ]]; then
+      chown -R "$SUDO_USER:$SUDO_USER" "$CHAIN_DIR/xdcchain" || true
+    fi
+    success "Snapshot installed at $TARGET_XDC (nodekey and transactions.rlp removed)"
+
+  else
+    # Testnet-style: contents of XDC/ are at the root of the tarball
+    # (chaindata/, nodes/, rewards/, etc.)
+    info "No XDC/ wrapper found — treating extract root as contents of XDC/ (testnet-style)."
+
+    if [[ ! -d chaindata && ! -d nodes && ! -d lightchaindata && ! -d rewards ]]; then
+      warn "No recognised chain directories found after extract. Starting without snapshot."
+      ls -lh || true
+    else
+      # Move everything extracted (except the tarball) into the target XDC/
+      shopt -s dotglob
+      for item in *; do
+        [[ "$item" == "$SNAPSHOT_FILE" ]] && continue
+        mv "$item" "$TARGET_XDC/" || true
+      done
+      shopt -u dotglob
+
+      # Clean node-specific files
+      rm -f "$TARGET_XDC/nodekey" "$TARGET_XDC/transactions.rlp" || true
+
       if [[ -n "${SUDO_USER:-}" ]]; then
         chown -R "$SUDO_USER:$SUDO_USER" "$CHAIN_DIR/xdcchain" || true
       fi
-      success "Snapshot installed at $CHAIN_DIR/xdcchain/XDC (nodekey and transactions.rlp removed)"
-    else
-      error "Failed to move XDC directory into place."
-      exit 1
+      success "Snapshot contents installed into $TARGET_XDC (nodekey and transactions.rlp removed)"
     fi
-  else
-    warn "Expected XDC directory not found after extract. Starting without snapshot."
-    ls -lh || true
   fi
 
   # Cleanup
   cd /
   rm -rf "$SNAP_DIR" || true
-  
-  # Return to the chain directory
   cd "$CHAIN_DIR"
 fi
 
