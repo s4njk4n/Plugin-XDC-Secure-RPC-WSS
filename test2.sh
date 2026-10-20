@@ -475,8 +475,32 @@ Managing whitelisted IPs:
 EOF
 
 success "Summary saved to: $SUMMARY_FILE"
+
 header "Installation complete"
-echo -e "${GREEN}RPC:${NC}  https://${HOST}/xdcrpc"
-echo -e "${GREEN}WSS:${NC}  wss://${HOST}/xdcwss"
+
+echo -e "${BOLD}${CYAN}Node type:${NC}  ${GREEN}${GC_MODE}${NC}"
+echo -e "${BOLD}${CYAN}APIs:${NC}       ${GREEN}${API}${NC}"
 echo
+echo -e "${BOLD}${GREEN}RPC:${NC}  ${CYAN}https://${HOST}/xdcrpc${NC}"
+echo -e "${BOLD}${GREEN}WSS:${NC}  ${CYAN}wss://${HOST}/xdcwss${NC}"
+echo
+
+echo -e "${BOLD}${YELLOW}Test from a whitelisted external IP:${NC}"
+echo
+echo -e "  ${BOLD}RPC:${NC}"
+echo -e "  ${CYAN}curl -H 'Content-Type: application/json' --data '{\"jsonrpc\":\"2.0\",\"method\":\"net_version\",\"params\":[],\"id\":1}' https://${HOST}/xdcrpc${NC}"
+echo
+echo -e "  ${BOLD}WSS (using wscat):${NC}"
+echo -e "  ${CYAN}sudo npm install -g wscat${NC}"
+echo -e "  ${CYAN}wscat -c wss://${HOST}/xdcwss${NC}"
+echo
+
+echo -e "${BOLD}${YELLOW}Node status:${NC}"
+echo -e "  ${CYAN}sudo docker compose -f ${CHAIN_DIR}/docker-compose.yml ps${NC}"
+echo
+
+echo -e "${BOLD}${YELLOW}Managing whitelisted IPs:${NC}"
+echo -e "  ${CYAN}sudo ./manage_whitelist.sh${NC}"
+echo
+
 success "Done."
