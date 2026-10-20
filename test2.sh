@@ -344,9 +344,10 @@ grep -q '^IPV6=' /etc/default/ufw && sed -i 's/^IPV6=.*/IPV6=no/' /etc/default/u
 ufw --force reset
 ufw default deny incoming
 ufw default allow outgoing
-ufw allow "$SSH_PORT"/tcp comment SSH
-ufw allow 30303/{tcp,udp} comment 'XDC P2P'
-ufw allow {80,443}/tcp comment 'HTTP/HTTPS'
+ufw allow "$SSH_PORT"/tcp comment 'SSH'
+ufw allow 30303/tcp comment 'XDC P2P'
+ufw allow 30303/udp comment 'XDC P2P'
+ufw allow 80,443/tcp comment 'HTTP/HTTPS'
 ufw --force enable
 success "UFW configured"
 
