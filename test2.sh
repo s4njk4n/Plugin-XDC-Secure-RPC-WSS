@@ -466,6 +466,10 @@ RPC:
 WSS (using wscat):
   sudo npm install -g wscat
   wscat -c wss://${HOST}/xdcwss
+  # Once connected, paste this and press Enter:
+  {"jsonrpc":"2.0","method":"net_version","params":[],"id":1}
+  # Expected result: "50" (mainnet) or "51" (testnet)
+  # To exit: type exit or press Ctrl+C
 
 Node status:
   sudo docker compose -f $CHAIN_DIR/docker-compose.yml ps
@@ -493,6 +497,10 @@ echo
 echo -e "  ${BOLD}WSS (using wscat):${NC}"
 echo -e "  ${CYAN}sudo npm install -g wscat${NC}"
 echo -e "  ${CYAN}wscat -c wss://${HOST}/xdcwss${NC}"
+echo -e "  ${CYAN}# Once connected, paste this and press Enter:${NC}"
+echo -e "  ${CYAN}{\"jsonrpc\":\"2.0\",\"method\":\"net_version\",\"params\":[],\"id\":1}${NC}"
+echo -e "  ${CYAN}# Expected result: \"50\" (mainnet) or \"51\" (testnet)${NC}"
+echo -e "  ${CYAN}# To exit: type exit or press Ctrl+C${NC}"
 echo
 
 echo -e "${BOLD}${YELLOW}Node status:${NC}"
