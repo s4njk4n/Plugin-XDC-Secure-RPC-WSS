@@ -4,6 +4,12 @@
 
 set -euo pipefail
 
+# Must run as root
+if [[ $EUID -ne 0 ]]; then
+  echo -e "\033[0;31m[ERR]\033[0m  This script must be run as root (use sudo)." >&2
+  exit 1
+fi
+
 # =============================================================================
 # Colours & helpers
 # =============================================================================
@@ -505,6 +511,10 @@ success "Nginx configuration applied"
 # =============================================================================
 # Summary
 # =============================================================================
+
+# Ensure summary directory exists
+mkdir -p "$(dirname "$SUMMARY_FILE")" 2>/dev/null || true
+
 SUMMARY_FILE="${REAL_HOME}/Plugin-XDC-Secure-RPC-WSS/xdc-install-summary.txt"
 cat > "$SUMMARY_FILE" << EOF
 === Installation complete ===
@@ -532,7 +542,7 @@ Node status:
   sudo docker compose -f $CHAIN_DIR/docker-compose.yml ps
 
 Managing whitelisted IPs:
-  sudo ./manage_whitelist.sh
+  cd ${REAL_HOME}/Plugin-XDC-Secure-RPC-WSS && sudo ./manage_whitelist.sh
 EOF
 
 success "Summary saved to: $SUMMARY_FILE"
@@ -565,7 +575,7 @@ echo -e "  ${CYAN}sudo docker compose -f ${CHAIN_DIR}/docker-compose.yml ps${NC}
 echo
 
 echo -e "${BOLD}${YELLOW}Managing whitelisted IPs:${NC}"
-echo -e "  ${CYAN}sudo ./manage_whitelist.sh${NC}"
+echo -e "  ${CYAN}cd ${REAL_HOME}/Plugin-XDC-Secure-RPC-WSS && sudo ./manage_whitelist.sh${NC}"
 echo
 
 success "Done."
