@@ -327,11 +327,17 @@ if [[ "$USE_SNAPSHOT" == true ]]; then
     exit 1
   }
 
+  # Confirm the file was actually downloaded
+  if [[ ! -s "$SNAP_DIR/$SNAPSHOT_FILE" ]]; then
+    error "Download completed but the snapshot file is missing or empty: $SNAP_DIR/$SNAPSHOT_FILE"
+    exit 1
+  fi
+
   info "Extracting snapshot (this can take a long time)..."
   # Extract inside SNAP_DIR so relative paths stay predictable
   (
     cd "$SNAP_DIR"
-    lz4 -d -c "$SNAPSHOT_FILE" | tar -xvf - --checkpoint=10000 --checkpoint-action=echo="  ... %u files" || exit 1
+    lz4 -d -c "$SNAPSHOT_FILE" | tar -xvf - --checkpoint=10000 --checkpoint-action=echo="  ... %u files"
   ) || {
     error "Extract failed."
     exit 1
@@ -350,7 +356,7 @@ if [[ "$USE_SNAPSHOT" == true ]]; then
   mv "$SNAP_DIR"/XDC/* "$TARGET_XDC/"
   shopt -u dotglob
 
-  # Remove the now-empty XDC directory (fail loudly if anything is left)
+  # Remove the now-empty XDC directory (warn if anything is left)
   if ! rmdir "$SNAP_DIR/XDC" 2>/dev/null; then
     warn "XDC directory was not empty after move — leftover contents:"
     ls -la "$SNAP_DIR/XDC" || true
@@ -364,11 +370,14 @@ if [[ "$USE_SNAPSHOT" == true ]]; then
     chown -R "$SUDO_USER:$SUDO_USER" "$CHAIN_DATA_DIR" || true
   fi
 
-  # Stricter verification — fail if either expected directory is missing
-  if [[ ! -d "$TARGET_XDC/chaindata" || ! -d "$TARGET_XDC/nodes" ]]; then
-    error "Snapshot verification failed — expected chaindata or nodes directory missing."
+  # Practical verification — require chaindata (nodes is optional in some snapshots)
+  if [[ ! -d "$TARGET_XDC/chaindata" ]]; then
+    error "Snapshot verification failed — chaindata directory is missing."
     ls -la "$TARGET_XDC" || true
     exit 1
+  fi
+  if [[ ! -d "$TARGET_XDC/nodes" ]]; then
+    warn "nodes directory not found in snapshot (this is sometimes normal)."
   fi
 
   success "Snapshot installed at $TARGET_XDC"
