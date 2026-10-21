@@ -1,4 +1,4 @@
-Note: Hold off using at present. Some essential updates underway so temporarily pause any usage of the installer. sorting out snapshot issues.
+Note: Hold off using at present. Some essential updates underway so temporarily pause any usage of the installer. Sorting out snapshot issues. Installing without snapshots works fine still. Just updating the snapshot source and will be finished soon.
 
 <p align="center">
   <img src="header.jpg" alt="Plugin XDC Secure RPC & WSS Installer" width="100%" />
