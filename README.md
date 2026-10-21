@@ -178,14 +178,15 @@ Press `Ctrl+C` or type `exit` to quit.
 Check if the node is running:
 
 ```bash
-sudo docker compose -f ~/XinFin-Node/docker-compose.yml ps
+sudo docker compose -f ~/XinFin-Node/mainnet/docker-compose.yml ps
 ```
 
 Watch the node logs:
 
 ```bash
-sudo docker compose -f ~/XinFin-Node/docker-compose.yml logs -f
+sudo docker compose -f ~/XinFin-Node/mainnet/docker-compose.yml logs -f
 ```
+Note: Replace _mainnet_ with _testnet_ if its a testnet node.
 
 ---
 
