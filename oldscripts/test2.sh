@@ -512,10 +512,8 @@ success "Nginx configuration applied"
 # Summary
 # =============================================================================
 
-# Ensure summary directory exists
-mkdir -p "$(dirname "$SUMMARY_FILE")" 2>/dev/null || true
-
 SUMMARY_FILE="${REAL_HOME}/Plugin-XDC-Secure-RPC-WSS/xdc-install-summary.txt"
+mkdir -p "$(dirname "$SUMMARY_FILE")" 2>/dev/null || true
 cat > "$SUMMARY_FILE" << EOF
 === Installation complete ===
 
