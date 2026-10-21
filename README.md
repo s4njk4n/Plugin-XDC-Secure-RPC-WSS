@@ -179,14 +179,17 @@ Check if the node is running:
 
 ```bash
 sudo docker compose -f ~/XinFin-Node/mainnet/docker-compose.yml ps
+or
+sudo docker compose -f ~/XinFin-Node/testnet/docker-compose.yml ps
 ```
 
 Watch the node logs:
 
 ```bash
 sudo docker compose -f ~/XinFin-Node/mainnet/docker-compose.yml logs -f
+or
+sudo docker compose -f ~/XinFin-Node/testnet/docker-compose.yml logs -f
 ```
-Note: Replace _mainnet_ with _testnet_ if its a testnet node.
 
 ---
 
