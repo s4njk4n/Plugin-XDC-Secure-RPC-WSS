@@ -264,9 +264,16 @@ EOF
 # Initial start + optional snapshot
 # =============================================================================
 header "Starting the node (initial run to create directories)"
-docker compose up -d
+cd "$CHAIN_DIR"
+docker compose -f "$CHAIN_DIR/docker-compose.yml" up -d
 sleep 20
-docker compose logs --tail 20 || true
+docker compose -f "$CHAIN_DIR/docker-compose.yml" logs --tail 20 || true
+
+# Confirm the data directory was actually created by the container
+if [[ ! -d "$CHAIN_DATA_DIR" ]]; then
+  error "Expected data directory was not created by the initial node start: $CHAIN_DATA_DIR"
+  exit 1
+fi
 success "Node started for initial setup"
 
 if [[ "$USE_SNAPSHOT" == true ]]; then
@@ -277,7 +284,6 @@ if [[ "$USE_SNAPSHOT" == true ]]; then
   SNAP_DIR="$CHAIN_DIR/snapshot-download"
   rm -rf "$SNAP_DIR"
   mkdir -p "$SNAP_DIR"
-  cd "$SNAP_DIR"
 
   # Select correct snapshot
   if [[ "$NETWORK" == "mainnet" ]]; then
@@ -322,25 +328,33 @@ if [[ "$USE_SNAPSHOT" == true ]]; then
   }
 
   info "Extracting snapshot (this can take a long time)..."
-  # All current official snapshots are .tar.lz4 and contain a top-level XDC/ directory
-  lz4 -d -c "$SNAPSHOT_FILE" | tar -xvf - --checkpoint=10000 --checkpoint-action=echo="  ... %u files" || {
+  # Extract inside SNAP_DIR so relative paths stay predictable
+  (
+    cd "$SNAP_DIR"
+    lz4 -d -c "$SNAPSHOT_FILE" | tar -xvf - --checkpoint=10000 --checkpoint-action=echo="  ... %u files" || exit 1
+  ) || {
     error "Extract failed."
     exit 1
   }
 
   # All snapshot types now contain a top-level XDC directory
-  if [[ ! -d XDC ]]; then
+  if [[ ! -d "$SNAP_DIR/XDC" ]]; then
     error "Snapshot did not contain the expected top-level XDC/ directory."
-    ls -lh
+    ls -lh "$SNAP_DIR"
     exit 1
   fi
 
   mkdir -p "$TARGET_XDC"
   info "Moving snapshot contents into place..."
   shopt -s dotglob
-  mv XDC/* "$TARGET_XDC/"
+  mv "$SNAP_DIR"/XDC/* "$TARGET_XDC/"
   shopt -u dotglob
-  rmdir XDC 2>/dev/null || true
+
+  # Remove the now-empty XDC directory (fail loudly if anything is left)
+  if ! rmdir "$SNAP_DIR/XDC" 2>/dev/null; then
+    warn "XDC directory was not empty after move — leftover contents:"
+    ls -la "$SNAP_DIR/XDC" || true
+  fi
 
   # Clean up node identity / pending txs so the node generates its own
   rm -f "$TARGET_XDC/nodekey" "$TARGET_XDC/transactions.rlp" || true
@@ -350,15 +364,16 @@ if [[ "$USE_SNAPSHOT" == true ]]; then
     chown -R "$SUDO_USER:$SUDO_USER" "$CHAIN_DATA_DIR" || true
   fi
 
-  # Basic verification
-  if [[ ! -d "$TARGET_XDC/chaindata" && ! -d "$TARGET_XDC/nodes" ]]; then
+  # Stricter verification — fail if either expected directory is missing
+  if [[ ! -d "$TARGET_XDC/chaindata" || ! -d "$TARGET_XDC/nodes" ]]; then
     error "Snapshot verification failed — expected chaindata or nodes directory missing."
+    ls -la "$TARGET_XDC" || true
     exit 1
   fi
 
   success "Snapshot installed at $TARGET_XDC"
 
-  cd /
+  # Clean up download directory and return to CHAIN_DIR
   rm -rf "$SNAP_DIR"
   cd "$CHAIN_DIR"
 fi
