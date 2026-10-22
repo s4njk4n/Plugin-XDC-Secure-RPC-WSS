@@ -14,7 +14,7 @@ CYAN='\033[0;36m'
 BOLD='\033[1m'
 NC='\033[0m'
 
-info()    { echo -e "${CYAN}[INFO]${NC} $*"; }
+info()    { echo -e "${CYAN}[INFO]${NC} $*" >&2; }
 success() { echo -e "${GREEN}[OK]${NC}   $*"; }
 warn()    { echo -e "${YELLOW}[WARN]${NC} $*"; }
 error()   { echo -e "${RED}[ERR]${NC}  $*" >&2; }
@@ -190,13 +190,22 @@ fetch_cloudflare_ips() {
 
   info "Fetching latest Cloudflare IPv4 ranges..."
   local ips
-  ips=$(curl -fsSL --max-time 15 "$CF_IPS_URL" 2>/dev/null || true)
+  ips=$(curl -fsSL --max-time 20 "$CF_IPS_URL" 2>/dev/null || true)
   if [[ -z "$ips" ]]; then
     error "Failed to fetch Cloudflare IP list from $CF_IPS_URL"
     return 1
   fi
 
-  echo "$ips" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/[0-9]+$' | sort -u
+  local filtered
+  filtered=$(echo "$ips" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/[0-9]+$' | sort -u || true)
+  if [[ -z "$filtered" ]]; then
+    error "No valid IPv4 CIDRs found in Cloudflare response."
+    return 1
+  fi
+
+  # Only the CIDR list goes to stdout
+  echo "$filtered"
+  return 0
 }
 
 cloudflare_present() {
@@ -205,38 +214,61 @@ cloudflare_present() {
   return 1
 }
 
+# Safer line insertion that avoids sed newline problems
+insert_allow_line() {
+  local location="$1"   # /xdcrpc or /xdcwss
+  local line="$2"
+
+  local tmp
+  tmp=$(mktemp)
+
+  awk -v loc="$location" -v newline="$line" '
+    $0 ~ "location = " loc " {" { inblock=1 }
+    inblock && /deny all;/ {
+      print newline
+      inblock=0
+    }
+    { print }
+  ' "$NGINX_CONF" > "$tmp"
+
+  mv "$tmp" "$NGINX_CONF"
+}
+
 toggle_cloudflare() {
   if cloudflare_present; then
     info "Cloudflare ranges are currently present — removing from both RPC and WSS..."
-    sed -i "/location = \\/xdcrpc {/,/deny all;/ { /# Cloudflare/d; }" "$NGINX_CONF"
-    sed -i "/location = \\/xdcwss {/,/deny all;/ { /# Cloudflare/d; }" "$NGINX_CONF"
+    sed -i "/location = \\/xdcrpc {/,/deny all;/ { /# Cloudflare/d; }" "$NGINX_CONF" || true
+    sed -i "/location = \\/xdcwss {/,/deny all;/ { /# Cloudflare/d; }" "$NGINX_CONF" || true
     success "Removed all Cloudflare IPv4 ranges from RPC and WSS."
   else
     local ips
-    ips=$(fetch_cloudflare_ips) || return
+    if ! ips=$(fetch_cloudflare_ips); then
+      error "Could not obtain Cloudflare IP list. Aborting."
+      return 1
+    fi
 
     local count=0
     while IFS= read -r ip; do
       [[ -z "$ip" ]] && continue
-      ((count++))
+      ((count++)) || true
 
       local line="        allow ${ip};  # Cloudflare"
 
       # Add to RPC if not already present
-      if ! extract_allows "/xdcrpc" | grep -q "allow ${ip};"; then
-        sed -i "/location = \\/xdcrpc {/,/deny all;/ s/^[[:space:]]*deny all;/${line}\\n        deny all;/" "$NGINX_CONF"
+      if ! extract_allows "/xdcrpc" | grep -qF "allow ${ip};"; then
+        insert_allow_line "/xdcrpc" "$line"
       fi
 
       # Add to WSS if not already present
-      if ! extract_allows "/xdcwss" | grep -q "allow ${ip};"; then
-        sed -i "/location = \\/xdcwss {/,/deny all;/ s/^[[:space:]]*deny all;/${line}\\n        deny all;/" "$NGINX_CONF"
+      if ! extract_allows "/xdcwss" | grep -qF "allow ${ip};"; then
+        insert_allow_line "/xdcwss" "$line"
       fi
     done <<< "$ips"
 
     success "Added Cloudflare IPv4 ranges to both RPC and WSS ($count ranges)."
   fi
 
-  reload_nginx
+  reload_nginx || true
 }
 
 # ========== Menu ==========
@@ -279,7 +311,7 @@ EOF
     5) remove_ip rpc ;;
     6) remove_ip wss ;;
     7) remove_ip both ;;
-    8) toggle_cloudflare ;;
+    8) toggle_cloudflare || warn "Toggle finished with errors (see messages above)." ;;
     0) success "Goodbye."; exit 0 ;;
     *) warn "Invalid option." ;;
   esac
