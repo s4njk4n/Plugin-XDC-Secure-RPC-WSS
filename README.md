@@ -1,5 +1,3 @@
-Note: Some updates just done. Ok to use without snapshots. Or if you want to test the snapshot process then its also ok and will probably work fine.
-
 <p align="center">
   <img src="header.jpg" alt="Plugin XDC Secure RPC & WSS Installer" width="100%" />
 </p>
