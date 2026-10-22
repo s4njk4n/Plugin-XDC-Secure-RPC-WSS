@@ -226,6 +226,94 @@ sudo docker compose -f ~/XinFin-Node/testnet/docker-compose.yml logs -f
 
 ---
 
+## Using Cloudflare with your RPC/WSS
+
+Cloudflare is a free reverse-proxy and security service that sits in front of your server. When you turn it on for your domain, visitors connect to Cloudflare’s network instead of directly to your VPS. Cloudflare then forwards only the allowed traffic to your origin.
+
+### Benefits for an RPC/WSS endpoint
+
+- Hides your server’s real IP address
+- Provides basic DDoS protection and rate limiting
+- Gives you a free web application firewall (WAF) and bot protection options
+- Lets you add extra access rules later (Cloudflare Access, country blocks, etc.) without changing the node
+- Works with the Let’s Encrypt certificate the installer already sets up
+
+### 1. Create a Cloudflare account and add your domain
+
+1. Go to [https://dash.cloudflare.com/sign-up](https://dash.cloudflare.com/sign-up) and create a free account.
+2. Click **Add a site** and enter the domain you used during installation (e.g. `yourdomain.com`).
+3. Choose the **Free** plan.
+4. Cloudflare will show you two nameservers. Log in to your domain registrar and replace the existing nameservers with the ones Cloudflare gives you.
+5. Wait for the nameservers to update (usually a few minutes to a couple of hours). Cloudflare will email you when the domain is active.
+
+### 2. Configure DNS and SSL in Cloudflare
+
+1. In the Cloudflare dashboard go to **DNS** → **Records**.
+2. Make sure there is an **A** record pointing to your VPS public IP address.
+3. Click the cloud icon so it turns **orange** (proxied). Grey-cloud (DNS-only) mode will not hide your IP or provide the protection.
+4. Go to **SSL/TLS** → **Overview** and set the encryption mode to **Full (strict)**.  
+   This matches the Let’s Encrypt certificate the installer created on the VPS.
+5. (Optional but recommended) Under **SSL/TLS** → **Edge Certificates**, turn on **Always Use HTTPS** and **Automatic HTTPS Rewrites**.
+
+### 3. Allow only specific IPs through Cloudflare
+
+By default Cloudflare proxies traffic from anyone. To restrict the RPC/WSS so that only your chosen IP addresses can reach the origin, create a WAF custom rule.
+
+1. In the Cloudflare dashboard go to **Security** → **WAF** → **Custom rules**.
+2. Click **Create rule**.
+3. Give it a name such as `Allow only whitelisted IPs`.
+4. In the expression editor use something like this (replace the example IPs with your real ones):
+
+```
+(not ip.src in {1.2.3.4 5.6.7.8 9.10.11.12})
+```
+
+5. Set the action to **Block**.
+6. Click **Deploy**.
+
+Only the IP addresses you listed will be able to reach your RPC and WSS endpoints. Everyone else receives a Cloudflare block page. You can edit the rule later to add or remove IPs.
+
+(If you prefer the older interface, the same thing can be done under **Security** → **WAF** → **Tools** → **IP Access Rules** by adding Allow rules for your IPs and a Block rule for `0.0.0.0/0`.)
+
+### 4. Allow Cloudflare’s IP ranges on the VPS
+
+Because traffic now arrives from Cloudflare’s servers (not from the original visitor’s IP), Nginx must be told to accept Cloudflare’s IP ranges. The whitelist manager has a one-click option for this.
+
+On the VPS run:
+
+```bash
+cd ~/Plugin-XDC-Secure-RPC-WSS && sudo ./manage_whitelist.sh
+```
+
+Choose option **8) Toggle Cloudflare IPv4 ranges**.  
+When it shows **[currently: OFF]**, selecting it will fetch the latest official Cloudflare IPv4 list and add every range to both the RPC and WSS locations (labelled `# Cloudflare`). Selecting it again removes them.
+
+After the toggle finishes, Nginx is automatically reloaded. You can confirm the entries with option **1) View current whitelist**.
+
+### 5. Test
+
+From one of the IP addresses you allowed in the Cloudflare WAF rule:
+
+```bash
+curl -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"net_version","params":[],"id":1}' \
+  https://yourdomain.com/xdcrpc
+```
+
+Mainnet should return `"result":"50"`.  
+Testnet should return `"result":"51"`.
+
+Requests from any other IP should be blocked by Cloudflare before they ever reach your VPS.
+
+### Notes
+
+- Only the Cloudflare IP ranges need to be whitelisted on the VPS. Individual visitor IPs no longer appear at Nginx.
+- The real access control is now done in Cloudflare’s WAF custom rule (step 3).
+- You can still add or remove your own extra IPs with the normal menu options on the VPS if you want direct (non-proxied) access as well.
+- If you later turn Cloudflare off (grey cloud), remember to toggle the Cloudflare ranges **OFF** again so those large ranges are not left open unnecessarily.
+
+---
+
 ## Common problems
 
 | Problem | What to do |
