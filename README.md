@@ -128,7 +128,7 @@ When it finishes it will show your final RPC and WSS addresses and save a summar
 
 ### Review the installation output
 
-First check the full install log (most useful for context, warnings, and troubleshooting):
+First check the end of the install log (most useful for context, warnings, and troubleshooting):
 
 ```bash
 cd ~/Plugin-XDC-Secure-RPC-WSS && cat ~/Plugin-XDC-Secure-RPC-WSS/screenlog.0
