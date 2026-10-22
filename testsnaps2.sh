@@ -358,7 +358,7 @@ if [[ "$USE_SNAPSHOT" == true ]]; then
     info "Streaming, decompressing and extracting snapshot (not resumable)..."
     (
       cd "$SNAP_DIR"
-      curl -fL --progress-bar "$SNAPSHOT_URL" | lz4 -d -c | tar -xvf - --checkpoint=10000 --checkpoint-action=echo="  ... %u files"
+      curl -fL --progress-bar "$SNAPSHOT_URL" | lz4 -d -c | tar -xvf - --checkpoint=10000 --checkpoint-action=echo="  ... %u files" || exit 1
     ) || {
       error "Streaming extract failed."
       exit 1
