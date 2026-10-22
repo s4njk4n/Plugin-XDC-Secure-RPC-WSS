@@ -141,9 +141,9 @@ yesno "Download the official chain snapshot? (much faster sync, but a large down
 if [[ "$USE_SNAPSHOT" == true ]]; then
   info "Snapshot selected."
   echo
-  info "Download method:"
-  info "  [1] Resumable download of .tar.lz4 (can resume if interrupted, uses more disk)"
-  info "  [2] Stream, decompress & extract (saves disk space, not resumable)"
+  echo -e "${YELLOW}Download method:${NC}"
+  echo -e "${YELLOW}  [1] Resumable download of .tar.lz4 (can resume if interrupted, uses more disk)${NC}"
+  echo -e "${YELLOW}  [2] Stream, decompress & extract (saves disk space, not resumable)${NC}"
   echo
   while true; do
     read -rp "$(echo -e "${YELLOW}Choose method [1]: ${NC}")" SNAPSHOT_METHOD
