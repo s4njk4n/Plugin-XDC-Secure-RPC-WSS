@@ -85,25 +85,32 @@ The installer will ask you a series of questions like this:
 
 <img src="screenshots/install_menu.png" width="720" alt="install_xdc_rpc_wss.sh prompts">
 
-Answer the installers questions carefully:
-
-- Network: type `mainnet` or `testnet`
-- Node type
+##### Installer Prompts
+- **Network**: `mainnet` or `testnet` (default: `mainnet`)
+- **Node Type**:
   - `full` — pruned node (lower disk usage; recommended for most RPC use)
   - `archive` — keeps full history (needs more disk space)
-- Enabled APIs
+- **Enabled APIs**:
   - Default: `eth,net,web3`
   - Archive nodes also enable `debug,trace` by default
   - Optional extras: `db,txpool,XDPoS`
   - Avoid `admin` and `personal` unless you specifically need them and understand the risks
-- Node name: any name you like (it shows on network stats)
-- Contact email: your email
-- Domain name: the domain that already points to this server
-- Let’s Encrypt email: usually the same email
-- SSH port: usually just press Enter for `22`
-- Chain snapshot
-  - Choosing `y` downloads the official snapshot and automatically extracts + integrates it (much faster than syncing from genesis)
-- Whitelist IPs: it will offer to add the Plugin RPCaaS IP. Add any other IPs you want to allow.
+- **Node Name**: any name you like (shown on network stats; default provided)
+- **Contact Email**
+- **Domain Name**: must already have its A record pointing to this server
+- **Let’s Encrypt Email**: usually the same as the contact email
+- **SSH Port**: usually just press Enter for `22`
+- **Chain Snapshot**:
+  - Choosing `y` downloads the official snapshot (much faster than syncing from genesis).
+  - You then choose the download method:
+    - **[1] Resumable** – downloads the `.tar.lz4` file (can resume if interrupted; uses more temporary disk space).
+    - **[2] Stream** – streams, decompresses and extracts in one step (uses less disk space; not resumable).
+  - The script checks free disk space before proceeding and will stop if there is not enough.
+  - The correct snapshot is selected automatically based on network and node type.
+- **Whitelist IPs**:
+  - Option to add the Plugin RPCaaS server IP
+  - Option to add an IP for testing the endpoints
+  - Then a loop to add any additional IPs
 
 **Important tips while the installer is running:**
 - The installation can take a long time (especially if downloading the snapshot).
@@ -220,6 +227,7 @@ sudo docker compose -f ~/XinFin-Node/testnet/docker-compose.yml logs -f
 | You get 403 Forbidden | Your IP is not on the whitelist. Run `sudo ./manage_whitelist.sh` and add it. |
 | Node seems stuck | Check logs with the `docker compose logs -f` command above. |
 | Installer stopped with an error | Look at `xdc-install-summary.txt` and `screenlog.0` in the home folder. |
+| Insufficient disk space during snapshot | Choose the stream method (uses less temporary space) or free up disk. The script reports required vs available space before starting the download. |
 
 ---
 
