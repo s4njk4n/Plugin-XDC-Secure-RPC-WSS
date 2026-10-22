@@ -356,6 +356,7 @@ if [[ "$USE_SNAPSHOT" == true ]]; then
 
   if [[ "$SNAPSHOT_METHOD" == "stream" ]]; then
     info "Streaming, decompressing and extracting snapshot (not resumable)..."
+    info "Note: Not every filename will be displayed (output is buffered). Extraction is still progressing."
     (
       cd "$SNAP_DIR"
       curl -fL --silent --show-error "$SNAPSHOT_URL" \
