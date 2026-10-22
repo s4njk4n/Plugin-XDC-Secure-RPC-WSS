@@ -126,19 +126,28 @@ When it finishes it will show your final RPC and WSS addresses and save a summar
 
 ## After installation
 
-### Check the summary
+### Review the installation output
+
+First check the full install log (most useful for context, warnings, and troubleshooting):
 
 ```bash
-cat ~/Plugin-XDC-Secure-RPC-WSS/xdc-install-summary.txt
+cd ~/Plugin-XDC-Secure-RPC-WSS && cat ~/Plugin-XDC-Secure-RPC-WSS/screenlog.0
 ```
+
+Then look at the short summary (endpoints, config, and test commands):
+
+```bash
+cd ~/Plugin-XDC-Secure-RPC-WSS && cat ~/Plugin-XDC-Secure-RPC-WSS/xdc-install-summary.txt
+```
+
+If anything looks wrong, both files are in the same directory and are the first things to inspect.
 
 ### Manage who is allowed to connect
 
 To add or remove IP addresses at any stage:
 
 ```bash
-cd ~/Plugin-XDC-Secure-RPC-WSS
-sudo ./manage_whitelist.sh
+cd ~/Plugin-XDC-Secure-RPC-WSS && sudo ./manage_whitelist.sh
 ```
 
 The whitelist manager looks like this:
