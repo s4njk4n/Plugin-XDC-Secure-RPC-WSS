@@ -282,7 +282,7 @@ Cloudflare is a free reverse-proxy and security service that sits in front of yo
 
 By default Cloudflare proxies traffic from anyone. To restrict the RPC/WSS so that only your chosen IP addresses can reach the origin, create a WAF custom rule.
 
-1. In the Cloudflare dashboard go to **Security** → **WAF** → **Custom rules**.
+1. In the Cloudflare dashboard go to **Security** → **Security rules** → **Custom rules**.
 2. Click **Create rule**.
 3. Give it a name such as `Allow only whitelisted IPs on abc.defg.com`.
 4. In the expression editor use something like this (replace the subdomain name and example IPs with your real ones):
