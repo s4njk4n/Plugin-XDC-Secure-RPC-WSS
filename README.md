@@ -220,7 +220,9 @@ sudo docker compose -f ~/XinFin-Node/testnet/docker-compose.yml logs -f
 
 ## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f4be.png" width="28" /> Configuration Backups
 
-During installation the script automatically saves timestamped copies of the three main configuration files to your home directory:
+During installation the script automatically saves timestamped copies of the three main configuration files into a dedicated directory in your home folder:
+
+`~/XDC-Backups/`
 
 - `XDCnode-Nginx.config.backup-xdc-node_YYYY-MM-DD_HH-MM-SS`
 - `XDCnode-env.backup-.env_YYYY-MM-DD_HH-MM-SS`
