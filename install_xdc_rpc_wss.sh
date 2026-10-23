@@ -549,6 +549,45 @@ nginx -t && systemctl reload nginx
 success "Nginx configuration applied"
 
 # =============================================================================
+# Backup final configuration files
+# =============================================================================
+header "Backing up configuration files"
+
+TS=$(date +%Y-%m-%d_%H-%M-%S)
+
+# Nginx
+NGINX_BACKUP="${REAL_HOME}/XDCnode-Nginx.config.backup-xdc-node_${TS}"
+if [[ -f /etc/nginx/sites-available/xdc-node ]]; then
+  cp /etc/nginx/sites-available/xdc-node "$NGINX_BACKUP"
+  chown "${SUDO_USER:-$USER}:${SUDO_USER:-$USER}" "$NGINX_BACKUP" 2>/dev/null || true
+  success "Nginx config → $NGINX_BACKUP"
+else
+  warn "Nginx config not found — skipping backup"
+fi
+
+# .env
+ENV_SRC="${CHAIN_DIR}/.env"
+ENV_BACKUP="${REAL_HOME}/XDCnode-env.backup-.env_${TS}"
+if [[ -f "$ENV_SRC" ]]; then
+  cp "$ENV_SRC" "$ENV_BACKUP"
+  chown "${SUDO_USER:-$USER}:${SUDO_USER:-$USER}" "$ENV_BACKUP" 2>/dev/null || true
+  success ".env → $ENV_BACKUP"
+else
+  warn ".env not found at $ENV_SRC — skipping backup"
+fi
+
+# docker-compose.yml
+COMPOSE_SRC="${CHAIN_DIR}/docker-compose.yml"
+COMPOSE_BACKUP="${REAL_HOME}/XDCnode-docker.settings.backup-docker-compose.yml_${TS}"
+if [[ -f "$COMPOSE_SRC" ]]; then
+  cp "$COMPOSE_SRC" "$COMPOSE_BACKUP"
+  chown "${SUDO_USER:-$USER}:${SUDO_USER:-$USER}" "$COMPOSE_BACKUP" 2>/dev/null || true
+  success "docker-compose.yml → $COMPOSE_BACKUP"
+else
+  warn "docker-compose.yml not found at $COMPOSE_SRC — skipping backup"
+fi
+
+# =============================================================================
 # Summary
 # =============================================================================
 
