@@ -282,11 +282,11 @@ By default Cloudflare proxies traffic from anyone. To restrict the RPC/WSS so th
 
 1. In the Cloudflare dashboard go to **Security** → **WAF** → **Custom rules**.
 2. Click **Create rule**.
-3. Give it a name such as `Allow only whitelisted IPs`.
-4. In the expression editor use something like this (replace the example IPs with your real ones):
+3. Give it a name such as `Allow only whitelisted IPs on abc.defg.com`.
+4. In the expression editor use something like this (replace the subdomain name and example IPs with your real ones):
 
 ```
-(not ip.src in {1.2.3.4 5.6.7.8 9.10.11.12})
+(http.host eq "abc.defg.com") and (not ip.src in {3.4.5.6 2.3.4.5})
 ```
 
 5. Set the action to **Block**.
