@@ -14,7 +14,7 @@ It sets up a secure XDC node (Mainnet or Apothem Testnet) and gives you private 
 
 ---
 
-## What you need before you start
+## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f4cb.png" width="28" /> What you need before you start
 
 - An Ubuntu server (24.04 or 26.04)
 - Root access (you can log in as `root`)
@@ -29,7 +29,7 @@ Recommended server size for a full node:
 
 ---
 
-## Step-by-step installation
+## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/2699.png" width="28" /> Step-by-step installation
 
 ### Step 1 – Log in as root
 
@@ -122,7 +122,7 @@ When it finishes it will show your final RPC and WSS addresses and save a summar
 
 ---
 
-## After installation
+## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f9ea.png" width="28" /> After installation
 
 ### Review the installation output
 
@@ -207,7 +207,7 @@ sudo docker compose -f ~/XinFin-Node/testnet/docker-compose.yml logs -f
 
 ---
 
-## Scripts in this repository
+## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f6e0.png" width="28" /> Scripts in this repository
 
 | Script | What it does |
 |--------|--------------|
@@ -217,7 +217,7 @@ sudo docker compose -f ~/XinFin-Node/testnet/docker-compose.yml logs -f
 
 ---
 
-## Security notes
+## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f512.png" width="28" /> Security Notes
 
 - The node’s RPC and WebSocket ports only listen on localhost.
 - Nginx handles HTTPS and only allows the IP addresses you whitelist.
@@ -226,7 +226,7 @@ sudo docker compose -f ~/XinFin-Node/testnet/docker-compose.yml logs -f
 
 ---
 
-## Using Cloudflare with your RPC/WSS
+## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/2601.png" width="28" /> Using Cloudflare with your RPC/WSS
 
 Cloudflare is a free reverse-proxy and security service that sits in front of your server. When you turn it on for your domain, visitors connect to Cloudflare’s network instead of directly to your VPS. Cloudflare then forwards only the allowed traffic to your origin.
 
@@ -290,6 +290,8 @@ When it shows **[currently: OFF]**, selecting it will fetch the latest official 
 
 After the toggle finishes, Nginx is automatically reloaded. You can confirm the entries with option **1) View current whitelist**.
 
+<img src="screenshots/cloudflare_ipv4.png" width="720" alt="current cloudflare ipv4 addresses">
+
 ### 5. Test
 
 From one of the IP addresses you allowed in the Cloudflare WAF rule:
@@ -314,7 +316,7 @@ Requests from any other IP should be blocked by Cloudflare before they ever reac
 
 ---
 
-## Common problems
+## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/26a0.png" width="28" /> Common problems
 
 | Problem | What to do |
 |---------|------------|
