@@ -296,8 +296,6 @@ By default Cloudflare proxies traffic from anyone. To restrict the RPC/WSS so th
 
 Only the IP addresses you listed will be able to reach your RPC and WSS endpoints. Everyone else receives a Cloudflare block page. You can edit the rule later to add or remove IPs.
 
-(If you prefer the older interface, the same thing can be done under **Security** → **WAF** → **Tools** → **IP Access Rules** by adding Allow rules for your IPs and a Block rule for `0.0.0.0/0`.)
-
 ### 4. Allow Cloudflare’s IP ranges on the VPS
 
 Because traffic now arrives from Cloudflare’s servers (not from the original visitor’s IP), Nginx must be told to accept Cloudflare’s IP ranges. The whitelist manager has a one-click option for this.
