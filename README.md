@@ -249,8 +249,6 @@ The script detects whether you have a mainnet and/or testnet node and backs up w
 
 ## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/2601.png" width="28" /> Using Cloudflare with your RPC/WSS
 
-_Note: If wanting to use Cloudflare, make sure your A record is set to "DNS only" (grey cloud) when installing the node in the steps above if your DNS is already at Cloudflare. The setup below regarding the "Proxied" (orange cloud) Proxy status is only to be done AFTER you've already completed the node setup steps above._
-
 Cloudflare is a free reverse-proxy and security service that sits in front of your server. When you turn it on for your domain, visitors connect to Cloudflare’s network instead of directly to your VPS. Cloudflare then forwards only the allowed traffic to your origin.
 
 ### Benefits for an RPC/WSS endpoint
@@ -260,6 +258,8 @@ Cloudflare is a free reverse-proxy and security service that sits in front of yo
 - Gives you a free web application firewall (WAF) and bot protection options
 - Lets you add extra access rules later (Cloudflare Access, country blocks, etc.) without changing the node
 - Works with the Let’s Encrypt certificate the installer already sets up
+
+_Note: If wanting to use Cloudflare, make sure your A record is set to "DNS only" (grey cloud) when installing the node in the steps above if your DNS is already at Cloudflare. The setup below regarding the "Proxied" (orange cloud) Proxy status is only to be done AFTER you've already completed the node setup steps above._
 
 ### 1. Create a Cloudflare account and add your domain
 
