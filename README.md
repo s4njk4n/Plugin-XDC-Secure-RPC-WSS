@@ -280,7 +280,7 @@ Cloudflare is a free reverse-proxy and security service that sits in front of yo
 
 ### 3. Allow only specific IPs through Cloudflare
 
-By default Cloudflare proxies traffic from anyone. To restrict the RPC/WSS so that only your chosen IP addresses can reach the origin, create a WAF custom rule.
+By default Cloudflare proxies traffic from anyone. To restrict the RPC/WSS so that only your chosen IP addresses can reach the origin, create a custom security rule.
 
 1. In the Cloudflare dashboard go to **Security** → **Security rules** → **Custom rules**.
 2. Click **Create rule**.
@@ -315,7 +315,7 @@ After the toggle finishes, Nginx is automatically reloaded. You can confirm the 
 
 ### 5. Test
 
-From one of the IP addresses you allowed in the Cloudflare WAF rule:
+From one of the IP addresses you allowed in the custom Cloudflare security rule:
 
 ```bash
 curl -H "Content-Type: application/json" \
@@ -331,7 +331,7 @@ Requests from any other IP should be blocked by Cloudflare before they ever reac
 ### Notes
 
 - Only the Cloudflare IP ranges need to be whitelisted on the VPS. Individual visitor IPs no longer appear at Nginx.
-- The real access control is now done in Cloudflare’s WAF custom rule (step 3).
+- The real access control is now done in Cloudflare’s custom security rule (step 3).
 - You can still add or remove your own extra IPs with the normal menu options on the VPS if you want direct (non-proxied) access as well.
 - If you later turn Cloudflare off (grey cloud), remember to toggle the Cloudflare ranges **OFF** again so those large ranges are not left open unnecessarily.
 
