@@ -214,6 +214,25 @@ sudo docker compose -f ~/XinFin-Node/testnet/docker-compose.yml logs -f
 | `create_nonroot_user.sh` | Creates a normal sudo user and moves the files into their home folder. |
 | `install_xdc_rpc_wss.sh` | Installs and secures the XDC node with RPC/WSS endpoints. |
 | `manage_whitelist.sh` | Lets you add or remove allowed IP addresses after installation. |
+| `backup_xdc_configs.sh` | Creates timestamped backups of the current Nginx config, `.env`, and `docker-compose.yml` in the user’s home directory. Useful before upgrades or changes. |
+
+---
+
+## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f4be.png" width="28" /> Configuration Backups
+
+During installation the script automatically saves timestamped copies of the three main configuration files to your home directory:
+
+- `XDCnode-Nginx.config.backup-xdc-node_YYYY-MM-DD_HH-MM-SS`
+- `XDCnode-env.backup-.env_YYYY-MM-DD_HH-MM-SS`
+- `XDCnode-docker.settings.backup-docker-compose.yml_YYYY-MM-DD_HH-MM-SS`
+
+You can also create a fresh set of backups at any time (for example before an upgrade or before pulling a new version of the repository) with the standalone script:
+
+```bash
+cd ~/Plugin-XDC-Secure-RPC-WSS && sudo ./backup_xdc_configs.sh
+```
+
+The script detects whether you have a mainnet and/or testnet node and backs up whichever configs exist.
 
 ---
 
