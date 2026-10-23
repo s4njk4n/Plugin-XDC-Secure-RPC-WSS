@@ -14,21 +14,21 @@ info()    { echo -e "${CYAN}[INFO]${NC} $*"; }
 success() { echo -e "${GREEN}[OK]${NC}   $*"; }
 warn()    { echo -e "${YELLOW}[WARN]${NC} $*"; }
 
-backup_timestamp() {
-  date +%Y-%m-%d_%H-%M-%S
-}
-
 # Determine real home (works whether run with sudo or not)
 REAL_HOME=$([[ -n ${SUDO_USER:-} ]] && getent passwd "$SUDO_USER" | cut -d: -f6 || echo "$HOME")
-TS=$(backup_timestamp)
+BACKUP_DIR="${REAL_HOME}/XDC-Backups"
+TS=$(date +%Y-%m-%d_%H-%M-%S)
+
+mkdir -p "$BACKUP_DIR"
+chown "${SUDO_USER:-$USER}:${SUDO_USER:-$USER}" "$BACKUP_DIR" 2>/dev/null || true
 
 info "Backup timestamp: $TS"
-info "Target directory: $REAL_HOME"
+info "Backup directory: $BACKUP_DIR"
 
 # --- Nginx ---
 NGINX_SRC="/etc/nginx/sites-available/xdc-node"
 if [[ -f "$NGINX_SRC" ]]; then
-  NGINX_DEST="${REAL_HOME}/XDCnode-Nginx.config.backup-xdc-node_${TS}"
+  NGINX_DEST="${BACKUP_DIR}/XDCnode-Nginx.config.backup-xdc-node_${TS}"
   cp "$NGINX_SRC" "$NGINX_DEST"
   chown "${SUDO_USER:-$USER}:${SUDO_USER:-$USER}" "$NGINX_DEST" 2>/dev/null || true
   success "Nginx config → $NGINX_DEST"
@@ -51,7 +51,7 @@ for NETWORK in mainnet testnet; do
 
     # .env
     if [[ -f "$CHAIN_DIR/.env" ]]; then
-      ENV_DEST="${REAL_HOME}/XDCnode-env.backup-.env_${TS}"
+      ENV_DEST="${BACKUP_DIR}/XDCnode-env.backup-.env_${TS}"
       cp "$CHAIN_DIR/.env" "$ENV_DEST"
       chown "${SUDO_USER:-$USER}:${SUDO_USER:-$USER}" "$ENV_DEST" 2>/dev/null || true
       success ".env ($NETWORK) → $ENV_DEST"
@@ -61,7 +61,7 @@ for NETWORK in mainnet testnet; do
 
     # docker-compose.yml
     if [[ -f "$CHAIN_DIR/docker-compose.yml" ]]; then
-      COMPOSE_DEST="${REAL_HOME}/XDCnode-docker.settings.backup-docker-compose.yml_${TS}"
+      COMPOSE_DEST="${BACKUP_DIR}/XDCnode-docker.settings.backup-docker-compose.yml_${TS}"
       cp "$CHAIN_DIR/docker-compose.yml" "$COMPOSE_DEST"
       chown "${SUDO_USER:-$USER}:${SUDO_USER:-$USER}" "$COMPOSE_DEST" 2>/dev/null || true
       success "docker-compose.yml ($NETWORK) → $COMPOSE_DEST"
@@ -73,5 +73,5 @@ done
 
 success "Backup complete."
 echo
-echo "Files are in: $REAL_HOME"
-ls -1 "$REAL_HOME"/XDCnode-*.backup-* 2>/dev/null | tail -n 10 || true
+echo "Files are in: $BACKUP_DIR"
+ls -1 "$BACKUP_DIR"/XDCnode-*.backup-* 2>/dev/null | tail -n 10 || true
