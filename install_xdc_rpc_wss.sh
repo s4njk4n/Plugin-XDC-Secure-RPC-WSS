@@ -553,10 +553,14 @@ success "Nginx configuration applied"
 # =============================================================================
 header "Backing up configuration files"
 
+BACKUP_DIR="${REAL_HOME}/XDC-Backups"
+mkdir -p "$BACKUP_DIR"
+chown "${SUDO_USER:-$USER}:${SUDO_USER:-$USER}" "$BACKUP_DIR" 2>/dev/null || true
+
 TS=$(date +%Y-%m-%d_%H-%M-%S)
 
 # Nginx
-NGINX_BACKUP="${REAL_HOME}/XDCnode-Nginx.config.backup-xdc-node_${TS}"
+NGINX_BACKUP="${BACKUP_DIR}/XDCnode-Nginx.config.backup-xdc-node_${TS}"
 if [[ -f /etc/nginx/sites-available/xdc-node ]]; then
   cp /etc/nginx/sites-available/xdc-node "$NGINX_BACKUP"
   chown "${SUDO_USER:-$USER}:${SUDO_USER:-$USER}" "$NGINX_BACKUP" 2>/dev/null || true
@@ -567,7 +571,7 @@ fi
 
 # .env
 ENV_SRC="${CHAIN_DIR}/.env"
-ENV_BACKUP="${REAL_HOME}/XDCnode-env.backup-.env_${TS}"
+ENV_BACKUP="${BACKUP_DIR}/XDCnode-env.backup-.env_${TS}"
 if [[ -f "$ENV_SRC" ]]; then
   cp "$ENV_SRC" "$ENV_BACKUP"
   chown "${SUDO_USER:-$USER}:${SUDO_USER:-$USER}" "$ENV_BACKUP" 2>/dev/null || true
@@ -578,7 +582,7 @@ fi
 
 # docker-compose.yml
 COMPOSE_SRC="${CHAIN_DIR}/docker-compose.yml"
-COMPOSE_BACKUP="${REAL_HOME}/XDCnode-docker.settings.backup-docker-compose.yml_${TS}"
+COMPOSE_BACKUP="${BACKUP_DIR}/XDCnode-docker.settings.backup-docker-compose.yml_${TS}"
 if [[ -f "$COMPOSE_SRC" ]]; then
   cp "$COMPOSE_SRC" "$COMPOSE_BACKUP"
   chown "${SUDO_USER:-$USER}:${SUDO_USER:-$USER}" "$COMPOSE_BACKUP" 2>/dev/null || true
