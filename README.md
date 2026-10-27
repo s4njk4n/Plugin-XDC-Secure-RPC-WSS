@@ -214,7 +214,7 @@ sudo docker compose -f ~/XinFin-Node/testnet/docker-compose.yml logs -f
 | `create_nonroot_user.sh` | Creates a normal sudo user and moves the files into their home folder. |
 | `install_xdc_rpc_wss.sh` | Installs and secures the XDC node with RPC/WSS endpoints. |
 | `manage_whitelist.sh` | Lets you add or remove allowed IP addresses after installation. |
-| `backup_xdc_configs.sh` | Creates timestamped backups of the current Nginx config, `.env`, and `docker-compose.yml` in the user’s home directory. Useful before upgrades or changes. |
+| `backup_xdc_configs.sh` | Creates timestamped backups of the current Nginx config, `.env`, and `docker-compose.yml`. Useful before upgrades or changes. |
 
 ---
 
