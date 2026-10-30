@@ -369,7 +369,7 @@ if [[ "$USE_SNAPSHOT" == true ]]; then
     }
   else
     info "Downloading snapshot (resumable)..."
-    aria2c -x 8 -s 8 -k 1M --continue=true --dir="$SNAP_DIR" "$SNAPSHOT_URL" || {
+    aria2c -x 5 -s 5 -k 1M --continue=true --dir="$SNAP_DIR" "$SNAPSHOT_URL" || {
       error "Download failed."
       exit 1
     }
