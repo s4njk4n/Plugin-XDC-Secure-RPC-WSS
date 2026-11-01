@@ -4,7 +4,9 @@
 
 # Plugin-XDC-Secure-RPC-WSS
 
-Simple installer for Plugin RPCaaS operators.  
+Simple installer for Plugin RPCaaS operators, and for any XDC node operator who wants a private, secured RPC.
+
+Part of [XDC Outpost](https://xdcoutpost.xyz/?utm_source=github-rpc-wss) · ⭐ If this installer saved you time, starring the repo helps other operators find it.
 
 It sets up a secure XDC node (Mainnet or Apothem Testnet) and gives you private RPC and WebSocket endpoints that only allow the IP addresses you choose. The installer can optionally download the official chain snapshot and automatically integrate it, so the node reaches a usable state much faster than syncing from genesis.
 
@@ -26,6 +28,31 @@ Recommended server size for a full node:
 - 6+ CPU cores
 - 32 GB RAM
 - 2+ TB SSD (1.5 TB ok if syncing chain from genesis)
+
+---
+
+<a id="done-for-you"></a>
+## <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f91d.png" width="28" /> Prefer not to do it yourself?
+
+I can install it for you, or guide you through it live. You keep full ownership of the server and domain, and an RPC node holds no wallet or keys.
+
+| | Guided install | Done-for-you install | Node care plan |
+|---|---|---|---|
+| **Price** | **US$90** | **US$200** full node<br>**US$300** archive node, or with Cloudflare set up | **US$50** per node per month |
+| **What happens** | We screen-share while you run the installer, and I troubleshoot as we go | I install, secure and test everything, then hand it over to you | I keep the node healthy after it's installed |
+| **Includes** | Live help until both endpoints work | Installation, IP whitelist, endpoint tests, a one-page handover summary, and 14 days of follow-up fixes | Uptime and masternode alerts ([XDC Sentinel](https://github.com/s4njk4n/XDC_Sentinel) and [XDC Tycoon](https://github.com/s4njk4n/XDC_Tycoon)), client upgrades when XDC releases them, whitelist changes, recovery from crashes or sync problems, and a reply within 24 hours |
+
+**How it works**
+1. Message me on Telegram with your network (mainnet or testnet), node type (full or archive), and the IP addresses to whitelist.
+2. You rent the server (see the specs above) and point your domain's A record at it.
+3. You create a temporary user and add my SSH key. I never need your root password.
+4. I install and test, send you the handover summary, then remove my key while you watch.
+
+**Not included:** the server itself, outages at your hosting provider, XDC network-wide issues, or changes you make yourself. Support is best-effort within 24 hours, not 24/7. Need help outside a plan? Ad-hoc help is US$60 per hour (1 hour minimum).
+
+Payable in the US-dollar equivalent in XDC, USDT or AUDD. Installs are paid upfront; care plans monthly in advance. Full details: [TERMS.md](TERMS.md).
+
+[![Request an install on Telegram](https://img.shields.io/badge/Request%20an%20install-Telegram-26A5E4?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/s4njk4n?text=Hi%20s4njk4n%2C%20I%27d%20like%20help%20setting%20up%20an%20XDC%20RPC%20node.)
 
 ---
 
@@ -344,7 +371,8 @@ Requests from any other IP should be blocked by Cloudflare before they ever reac
 | Let’s Encrypt fails | Make sure your domain’s A record points to this server and ports 80 & 443 are open. |
 | You get 403 Forbidden | Your IP is not on the whitelist. Run `sudo ./manage_whitelist.sh` and add it. |
 | Node seems stuck | Check logs with the `docker compose logs -f` command above. |
-| Installer stopped with an error | Look at `xdc-install-summary.txt` and `screenlog.0` in the home folder. |
+| Installer stopped with an error | Look at `xdc-install-summary.txt` and `screenlog.0` in `~/Plugin-XDC-Secure-RPC-WSS`. |
+| Running the install command again says the folder already exists | You've cloned it before. Run `cd ~/Plugin-XDC-Secure-RPC-WSS && git pull` instead of the clone step, then continue from Step 4. |
 | Insufficient disk space during snapshot | Choose the stream method (uses less temporary space) or free up disk. The script reports required vs available space before starting the download. |
 
 ---
@@ -362,7 +390,7 @@ This is provided as-is. Please read the scripts before running them. You are res
 ---
 
 **Author:** [s4njk4n](https://github.com/s4njk4n)  
-More info: [XDCoutpost.xyz](https://xdcoutpost.xyz)
+More tools: [XDC Outpost](https://xdcoutpost.xyz/?utm_source=github-rpc-wss) · Want it installed for you? See [Prefer not to do it yourself?](#done-for-you)
 
 Special thanks to inv4fee2020 for the earlier XDC node installer work and for the color scheme that inspired this recreation. This project is an independent rewrite and does not reuse the original scripts.
 
