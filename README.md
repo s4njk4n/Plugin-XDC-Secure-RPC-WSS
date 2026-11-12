@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="header.jpg" alt="Plugin XDC Secure RPC & WSS Installer" width="100%" />
+  <img src="header2.jpg" alt="Plugin XDC Secure RPC & WSS Installer" width="100%" />
 </p>
 
 # XDC-Secure-RPC-WSS
