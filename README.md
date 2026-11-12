@@ -2,9 +2,9 @@
   <img src="header.jpg" alt="Plugin XDC Secure RPC & WSS Installer" width="100%" />
 </p>
 
-# Plugin-XDC-Secure-RPC-WSS
+# XDC-Secure-RPC-WSS
 
-Simple installer for Plugin RPCaaS operators, and for any XDC node operator who wants a private, secured RPC.
+Simple installer for any XDC node operator (including Plugin RPCaaS operators) who wants a private, secured RPC.
 
 Part of [XDC Outpost](https://xdcoutpost.xyz/?utm_source=github-rpc-wss) · ⭐ If this installer saved you time, starring the repo helps other operators find it.
 
